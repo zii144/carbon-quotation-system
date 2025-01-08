@@ -23,7 +23,7 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           cd backend
-          railway up --service backend --detach
+          railway up --detach
 
   deploy-frontend:
     name: Deploy Frontend
@@ -42,4 +42,4 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           cd frontend
-          railway up --service frontend --detach
+          railway up --detach
