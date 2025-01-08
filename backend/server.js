@@ -21,10 +21,11 @@ const db = mysql.createConnection({
 
 // Database connection in Railway
 const db = mysql.createConnection({
-  host: "mysql.railway.internal", // Use Railway internal hostname
-  user: "root",
-  password: "password",
-  database: "carbon_quotation",
+  host: process.env.MYSQLHOST || "localhost",
+  user: process.env.MYSQLUSER || "root",
+  password: process.env.MYSQLPASSWORD || "password",
+  database: process.env.MYSQLDATABASE || "carbon_quotation",
+  port: process.env.MYSQLPORT || 3306,
   charset: "utf8mb4",
 });
 
