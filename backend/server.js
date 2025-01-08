@@ -83,6 +83,7 @@ app.post("/api/employees", (req, res) => {
   );
 });
 
+// API to delete employee data
 app.delete("/api/employees/:id", (req, res) => {
   const { id } = req.params;
   const sql = "DELETE FROM employees WHERE id = ?";
