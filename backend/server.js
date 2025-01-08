@@ -8,6 +8,7 @@ app.use(express.json());
 
 const port = 5000;
 
+// Database connection
 const db = mysql.createConnection({
   host: "db",
   user: "root",
@@ -16,6 +17,7 @@ const db = mysql.createConnection({
   charset: "utf8mb4",
 });
 
+// Connect to the database
 db.connect((err) => {
   if (err) {
     console.error("DB Connection Failed:", err);
