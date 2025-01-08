@@ -8,9 +8,20 @@ app.use(express.json());
 
 const port = 5000;
 
-// Database connection
+/*
+// Database connection Saft in Docker
 const db = mysql.createConnection({
   host: "db",
+  user: "root",
+  password: "password",
+  database: "carbon_quotation",
+  charset: "utf8mb4",
+});
+*/
+
+// Database connection in Railway
+const db = mysql.createConnection({
+  host: "mysql.railway.internal", // Use Railway internal hostname
   user: "root",
   password: "password",
   database: "carbon_quotation",
