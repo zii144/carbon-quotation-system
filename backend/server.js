@@ -39,6 +39,7 @@ app.get("/api/employees", (req, res) => {
   });
 });
 
+// API to add employee data
 app.post("/api/employees", (req, res) => {
   const {
     id,
