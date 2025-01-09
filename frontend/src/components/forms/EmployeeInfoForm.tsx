@@ -31,7 +31,7 @@ interface Employee {
   region: string;
   role: string;
   date_of_hire: Date | string;
-  date_of_resignation?: string;
+  date_of_resignation: Date | string;
   created_at: Date | string;
   handover_staff?: string;
 }
@@ -42,6 +42,13 @@ export default function EmployeeInfoForm() {
   useEffect(() => {
     fetchEmployeeData();
   }, []);
+
+  const highlightErrorFields = () => {
+    return {
+      borderColor: "red",
+      borderWidth: 2,
+    };
+  };
 
   //#region Row Selection
   const [selectedRow, setSelectedRow] = useState<number | null>(null); // For row selection
@@ -59,16 +66,16 @@ export default function EmployeeInfoForm() {
       setSelectedRow(null);
       // Optionally clear form fields on deselect
       setFormValues({
-        employeeId: "",
-        employeeName: "",
-        gender: "",
-        birthDate: "",
-        region: "",
-        role: "",
-        startDate: "",
-        endDate: "",
-        createdData: "",
-        transferPerson: "",
+        employeeId: employee.employee_id.toString(),
+        employeeName: employee.employee_name,
+        gender: employee.gender,
+        birthDate: employee.birthDate,
+        region: employee.region,
+        role: employee.role,
+        startDate: formatDateForBackend(employee.date_of_hire),
+        endDate: formatDateForBackend(employee.date_of_resignation) || "",
+        createdData: formatDateForBackend(employee.created_at),
+        transferPerson: employee.handover_staff || "",
       });
     }
   };
@@ -91,7 +98,7 @@ export default function EmployeeInfoForm() {
       startDate: parsedStartDate
         ? parsedStartDate.toISOString().split("T")[0]
         : "",
-      endDate: employee.date_of_resignation || "",
+      endDate: formatDateForBackend(employee.date_of_resignation) || "",
       createdData: parsedCreatedDate
         ? parsedCreatedDate.toISOString().split("T")[0]
         : "",
@@ -124,6 +131,17 @@ export default function EmployeeInfoForm() {
     endDate: "",
     createdData: "",
     transferPerson: "",
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    employeeId: false,
+    employeeName: false,
+    gender: false,
+    birthDate: false,
+    region: false,
+    role: false,
+    startDate: false,
+    createdData: false,
   });
 
   const handleClearFields = () => {
@@ -161,7 +179,7 @@ export default function EmployeeInfoForm() {
       });
   };
 
-  const formatDate = (date: Date | string): string => {
+  const formatDateForBackend = (date: Date | string): string => {
     if (!date) return "";
     const d = new Date(date);
     return d.toISOString().split("T")[0];
@@ -176,28 +194,33 @@ export default function EmployeeInfoForm() {
       employee_id: parseInt(newEmployeeId),
       employee_name: formValues.employeeName,
       gender: formValues.gender,
-      birthDate: formatDate(formValues.birthDate),
+      birthDate: formatDateForBackend(formValues.birthDate),
       region: formValues.region,
       role: formValues.role,
-      date_of_hire: formatDate(formValues.startDate || new Date()),
-      date_of_resignation: formValues.endDate
-        ? formatDate(formValues.endDate)
-        : "",
-      created_at: formatDate(new Date()),
-      handover_staff: formValues.transferPerson || "",
+      date_of_hire: formValues.startDate
+        ? formatDateForBackend(formValues.startDate)
+        : formatDateForBackend(new Date()),
+      date_of_resignation: "",
+      created_at: formatDateForBackend(new Date()),
+      handover_staff: formValues.transferPerson || undefined,
     };
 
     // Validate
-    const isFormValid = Object.values({
-      id: newEmployee.employee_id,
-      name: newEmployee.employee_name,
-      gender: newEmployee.gender,
-      birthDate: newEmployee.birthDate,
-      region: newEmployee.region,
-      role: newEmployee.role,
-      startDate: newEmployee.date_of_hire,
-      createdData: newEmployee.created_at,
-    }).every((value) => value);
+    const newFormErrors = {
+      employeeId: !newEmployee.employee_id,
+      employeeName: !newEmployee.employee_name,
+      gender: !newEmployee.gender,
+      birthDate: !newEmployee.birthDate,
+      region: !newEmployee.region,
+      role: !newEmployee.role,
+      startDate: !newEmployee.date_of_hire,
+      createdData: !newEmployee.created_at,
+    };
+
+    setFormErrors(newFormErrors);
+
+    const isFormValid = !Object.values(newFormErrors).some((error) => error);
+
     if (!isFormValid) {
       alert("請完整填寫資料");
       return;
@@ -221,8 +244,34 @@ export default function EmployeeInfoForm() {
       });
   };
 
-  const handleEdit = () => {
-    console.log("Edit employee");
+  const handleUpdateEmployee = () => {
+    if (!selectedRow) {
+      alert("請選擇要修改的員工");
+      return;
+    }
+    const updatedEmployee = {
+      name: formValues.employeeName,
+      gender: formValues.gender,
+      birthDate: formValues.birthDate,
+      region: formValues.region,
+      role: formValues.role,
+      startDate: formValues.startDate,
+      endDate: formValues.endDate,
+      createdData: formValues.createdData,
+      transferPerson: formValues.transferPerson,
+    };
+
+    axios
+      .put(`/api/employees/${selectedRow}`, updatedEmployee)
+      .then(() => {
+        alert("員工更新成功");
+        handleClearFields();
+        fetchEmployeeData();
+      })
+      .catch((error) => {
+        console.error("Error updating employee:", error);
+        alert("更新失敗");
+      });
   };
 
   // Define Type for Button Config
@@ -245,8 +294,8 @@ export default function EmployeeInfoForm() {
       text: "修改",
       variant: "outlined",
       color: "primary",
-      onClick: handleEdit,
-      disabled: true,
+      onClick: handleUpdateEmployee, // Enable update
+      disabled: false,
     },
     {
       text: "刪除",
@@ -316,6 +365,7 @@ export default function EmployeeInfoForm() {
             onChange={(e) =>
               setFormValues({ ...formValues, employeeId: e.target.value })
             }
+            sx={formErrors.employeeId ? highlightErrorFields() : undefined}
           />
         </Grid>
         <Grid item xs={6}>
@@ -326,6 +376,7 @@ export default function EmployeeInfoForm() {
             onChange={(e) =>
               setFormValues({ ...formValues, employeeName: e.target.value })
             }
+            sx={formErrors.employeeName ? highlightErrorFields() : undefined}
           />
         </Grid>
 
@@ -337,6 +388,7 @@ export default function EmployeeInfoForm() {
               onChange={(e) => {
                 setFormValues({ ...formValues, gender: e.target.value });
               }}
+              sx={formErrors.gender ? highlightErrorFields() : undefined}
             >
               <MenuItem value="男">男</MenuItem>
               <MenuItem value="女">女</MenuItem>
@@ -356,18 +408,25 @@ export default function EmployeeInfoForm() {
             InputLabelProps={{
               shrink: true,
             }}
+            sx={formErrors.birthDate ? highlightErrorFields() : undefined}
           />
         </Grid>
 
         <Grid item xs={6}>
           <FormControl fullWidth>
-            <InputLabel shrink={!!formValues.role}>職稱</InputLabel>
+            <InputLabel
+              shrink={!!formValues.role}
+              sx={formErrors.role ? highlightErrorFields() : undefined}
+            >
+              職稱
+            </InputLabel>
             <Select
               value={formValues.role}
               onChange={(e) => {
                 setFormValues({ ...formValues, role: e.target.value });
               }}
               displayEmpty
+              sx={formErrors.role ? highlightErrorFields() : undefined}
             >
               <MenuItem value=""> </MenuItem>
               <MenuItem value="總經理">總經理</MenuItem>
@@ -379,12 +438,18 @@ export default function EmployeeInfoForm() {
 
         <Grid item xs={6}>
           <FormControl fullWidth>
-            <InputLabel shrink={!!formValues.region}>所屬區域</InputLabel>
+            <InputLabel
+              shrink={!!formValues.region}
+              sx={formErrors.region ? highlightErrorFields() : undefined}
+            >
+              所屬區域
+            </InputLabel>
             <Select
               value={formValues.region}
               onChange={(e) => {
                 setFormValues({ ...formValues, region: e.target.value });
               }}
+              sx={formErrors.region ? highlightErrorFields() : undefined}
             >
               <MenuItem value="全區">全區</MenuItem>
               <MenuItem value="中區">中區</MenuItem>
@@ -406,6 +471,7 @@ export default function EmployeeInfoForm() {
             InputLabelProps={{
               shrink: true,
             }}
+            sx={formErrors.startDate ? highlightErrorFields() : undefined}
           />
         </Grid>
 

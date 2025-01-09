@@ -36,11 +36,14 @@ db.connect((err) => {
     return;
   }
   console.log("DB Connected");
+  db.query("SET NAMES utf8mb4;");
+  db.query("SET CHARACTER SET utf8mb4;");
 });
 
 // API to fetch employee data
 app.get("/api/employees", (req, res) => {
-  const sql = "SELECT * FROM employees";
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const sql = "SELECT * FROM EmployeeBasicInfo";
   db.query(sql, (err, results) => {
     if (err) {
       console.log(err);
@@ -53,37 +56,38 @@ app.get("/api/employees", (req, res) => {
 
 // API to add employee data
 app.post("/api/employees", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
   const {
-    id,
-    name,
+    employee_id,
+    employee_name,
     gender,
     birthDate,
     region,
     role,
-    startDate,
-    endDate,
-    createdData,
-    transferPerson,
+    date_of_hire,
+    date_of_resignation,
+    handover_staff,
+    created_at,
   } = req.body;
 
   const sql = `
-    INSERT INTO employees (
-      id, name, gender, birthDate, region, role, startDate, endDate, createdData, transferPerson
+    INSERT INTO EmployeeBasicInfo (
+      employee_id, employee_name, gender, birthDate, region, role, date_of_hire, date_of_resignation, handover_staff, created_at
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   db.query(
     sql,
     [
-      id,
-      name,
+      employee_id,
+      employee_name,
       gender,
       birthDate,
       region,
       role,
-      startDate,
-      endDate,
-      createdData,
-      transferPerson,
+      date_of_hire,
+      date_of_resignation || null,
+      handover_staff || null,
+      created_at,
     ],
     (err) => {
       if (err) {
@@ -95,16 +99,88 @@ app.post("/api/employees", (req, res) => {
   );
 });
 
+// API to update employee data
+app.put("/api/employees/:id", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const {
+    name,
+    gender,
+    birthDate,
+    region,
+    role,
+    startDate,
+    endDate,
+    createdData,
+    transferPerson,
+  } = req.body;
+  const sql = `
+    UPDATE EmployeeBasicInfo
+    SET
+      name = ?,
+      gender = ?,
+      birthDate = ?,
+      region = ?,
+      role = ?,
+      startDate = ?,
+      endDate = ?,
+      createdData = ?,
+      transferPerson = ?
+    WHERE id = ?
+  `;
+  db.query(
+    sql,
+    [
+      name,
+      gender,
+      birthDate,
+      region,
+      role,
+      startDate,
+      endDate || null,
+      createdData,
+      transferPerson || null,
+      req.params.id,
+    ],
+    (err) => {
+      if (err) {
+        console.error("Error updating employee:", err.message);
+        return res.status(500).send(`Error updating employee: ${err.message}`);
+      }
+      res.send("Employee updated");
+    }
+  );
+});
+
 // API to delete employee data
 app.delete("/api/employees/:id", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
   const { id } = req.params;
-  const sql = "DELETE FROM employees WHERE id = ?";
+  const sql = "DELETE FROM EmployeeBasicInfo WHERE id = ?";
   db.query(sql, [id], (err) => {
     if (err) {
       console.log(err);
       return res.status(500).send("Error deleting employee");
     }
     res.send("Employee deleted");
+  });
+});
+
+// API to validate login credentials
+app.post("/api/login", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const { email, password } = req.body;
+  const sql =
+    "SELECT * FROM LoginAccount WHERE user_email = ? AND user_password = ?";
+  db.query(sql, [email, password], (err, results) => {
+    if (err) {
+      console.error("Error during login:", err);
+      return res.status(500).json({ success: false });
+    }
+    if (results.length > 0) {
+      res.status(200).json({ success: true });
+    } else {
+      res.status(400).json({ success: false });
+    }
   });
 });
 

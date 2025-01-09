@@ -27,6 +27,7 @@ services:
       MYSQL_CHARSET: utf8mb4
       MYSQL_COLLATION: utf8mb4_unicode_ci
     volumes:
+      - db_data:/var/lib/mysql
       - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
@@ -35,4 +36,4 @@ services:
     restart: always
 
 volumes:
-  db-data:
+  db_data:

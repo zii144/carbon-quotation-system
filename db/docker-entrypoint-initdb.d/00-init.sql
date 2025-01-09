@@ -163,3 +163,10 @@ CREATE TABLE
         created_at DATE, -- 建立日期
         updated_at DATE -- 更新日期
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- Create a LoginAccount table with updated schema
+CREATE TABLE
+    IF NOT EXISTS LoginAccount (
+        user_email VARCHAR(50) NOT NULL, -- 使用者名稱
+        user_password VARCHAR(100) NOT NULL -- 密碼
+    )
