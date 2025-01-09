@@ -202,7 +202,12 @@ export default function CostEntryForm() {
               <TextField label="加工成本 $" fullWidth margin="dense" />
               <TextField label="委外公司名稱" fullWidth margin="dense" />
               <TextField label="委外成本 $" fullWidth margin="dense" />
-              <TextField label="合計 $" fullWidth margin="dense" disabled />
+              <TextField
+                label="加工時間及委外成本合計 $"
+                fullWidth
+                margin="dense"
+                disabled
+              />
               <Button variant="contained" sx={{ mt: 2, width: "100%" }}>
                 執行合計
               </Button>

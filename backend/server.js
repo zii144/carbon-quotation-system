@@ -8,7 +8,6 @@ app.use(express.json());
 
 const port = 5000;
 
-/*
 // Database connection Saft in Docker
 const db = mysql.createConnection({
   host: "db",
@@ -17,8 +16,8 @@ const db = mysql.createConnection({
   database: "carbon_quotation",
   charset: "utf8mb4",
 });
-*/
 
+/*
 // Database connection in Railway
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST || "mysql.railway.internal",
@@ -28,6 +27,7 @@ const db = mysql.createConnection({
   port: process.env.MYSQLPORT || 3306,
   charset: "utf8mb4",
 });
+*/
 
 // Connect to the database
 db.connect((err) => {

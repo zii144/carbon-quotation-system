@@ -228,7 +228,12 @@ export default function ApprovedCostForm() {
                 margin="dense"
               />
               <TextField disabled label="委外成本 $" fullWidth margin="dense" />
-              <TextField disabled label="合計 $" fullWidth margin="dense" />
+              <TextField
+                disabled
+                label="加工時間及委外成本合計 $"
+                fullWidth
+                margin="dense"
+              />
               <TextField
                 disabled
                 label="總成本合計 $"
