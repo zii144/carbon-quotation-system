@@ -24,16 +24,16 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 interface Employee {
-  id: number;
-  name: string;
+  employee_id: number;
+  employee_name: string;
   gender: string;
   birthDate: string;
   region: string;
   role: string;
-  startDate: Date | string;
-  endDate?: string;
-  createdData: Date | string;
-  transferPerson?: string;
+  date_of_hire: Date | string;
+  date_of_resignation?: string;
+  created_at: Date | string;
+  handover_staff?: string;
 }
 
 export default function EmployeeInfoForm() {
@@ -48,11 +48,11 @@ export default function EmployeeInfoForm() {
 
   // Row Click Hanlder
   const handleRowClick = (employee: Employee) => {
-    const isRowSelected = selectedRow === employee.id;
+    const isRowSelected = selectedRow === employee.employee_id;
 
     if (!isRowSelected) {
       // Select and fill form only if the row isn't already selected
-      setSelectedRow(employee.id);
+      setSelectedRow(employee.employee_id);
       handleRowSelectedData(employee);
     } else {
       // Deselect row
@@ -74,16 +74,16 @@ export default function EmployeeInfoForm() {
   };
 
   const handleRowSelectedData = (employee: Employee) => {
-    const parsedStartDate = employee.startDate
-      ? new Date(employee.startDate)
+    const parsedStartDate = employee.date_of_hire
+      ? new Date(employee.date_of_hire)
       : null;
-    const parsedCreatedDate = employee.createdData
-      ? new Date(employee.createdData)
+    const parsedCreatedDate = employee.created_at
+      ? new Date(employee.created_at)
       : null;
 
     setFormValues({
-      employeeId: employee.id.toString(),
-      employeeName: employee.name,
+      employeeId: employee.employee_id.toString(),
+      employeeName: employee.employee_name,
       gender: employee.gender,
       birthDate: employee.birthDate,
       region: employee.region,
@@ -91,11 +91,11 @@ export default function EmployeeInfoForm() {
       startDate: parsedStartDate
         ? parsedStartDate.toISOString().split("T")[0]
         : "",
-      endDate: employee.endDate || "",
+      endDate: employee.date_of_resignation || "",
       createdData: parsedCreatedDate
         ? parsedCreatedDate.toISOString().split("T")[0]
         : "",
-      transferPerson: employee.transferPerson || "",
+      transferPerson: employee.handover_staff || "",
     });
   };
   //#endregion
@@ -173,28 +173,30 @@ export default function EmployeeInfoForm() {
     const newEmployeeId = formValues.employeeId || `0${nextId}`;
 
     const newEmployee: Employee = {
-      id: parseInt(newEmployeeId),
-      name: formValues.employeeName,
+      employee_id: parseInt(newEmployeeId),
+      employee_name: formValues.employeeName,
       gender: formValues.gender,
       birthDate: formatDate(formValues.birthDate),
       region: formValues.region,
       role: formValues.role,
-      startDate: formatDate(formValues.startDate || new Date()),
-      endDate: formValues.endDate ? formatDate(formValues.endDate) : "",
-      createdData: formatDate(new Date()),
-      transferPerson: formValues.transferPerson || "",
+      date_of_hire: formatDate(formValues.startDate || new Date()),
+      date_of_resignation: formValues.endDate
+        ? formatDate(formValues.endDate)
+        : "",
+      created_at: formatDate(new Date()),
+      handover_staff: formValues.transferPerson || "",
     };
 
     // Validate
     const isFormValid = Object.values({
-      id: newEmployee.id,
-      name: newEmployee.name,
+      id: newEmployee.employee_id,
+      name: newEmployee.employee_name,
       gender: newEmployee.gender,
       birthDate: newEmployee.birthDate,
       region: newEmployee.region,
       role: newEmployee.role,
-      startDate: newEmployee.startDate,
-      createdData: newEmployee.createdData,
+      startDate: newEmployee.date_of_hire,
+      createdData: newEmployee.created_at,
     }).every((value) => value);
     if (!isFormValid) {
       alert("請完整填寫資料");
@@ -206,7 +208,7 @@ export default function EmployeeInfoForm() {
     axios
       .post("/api/employees", newEmployee)
       .then(() => {
-        alert(`成功新增員工: ${newEmployee.name}`);
+        alert(`成功新增員工: ${newEmployee.employee_name}`);
         handleClearFields();
         fetchEmployeeData();
       })
@@ -464,19 +466,19 @@ export default function EmployeeInfoForm() {
             <TableBody>
               {employeeData.map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row.employee_id}
                   hover
                   onClick={() => handleRowClick(row)}
                   sx={{
                     cursor: "pointer",
                     backgroundColor:
-                      selectedRow === row.id
+                      selectedRow === row.employee_id
                         ? "rgba(33, 150, 243, 0.1)"
                         : "inherit",
                   }}
                 >
-                  <TableCell>{row.id}</TableCell>
-                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.employee_id}</TableCell>
+                  <TableCell>{row.employee_name}</TableCell>
                   <TableCell>{row.gender}</TableCell>
                   <TableCell>
                     {row.birthDate
@@ -486,13 +488,13 @@ export default function EmployeeInfoForm() {
                   <TableCell>{row.region}</TableCell>
                   <TableCell>{row.role}</TableCell>
                   <TableCell>
-                    {row.startDate
-                      ? new Date(row.startDate).toLocaleDateString()
+                    {row.date_of_hire
+                      ? new Date(row.date_of_hire).toLocaleDateString()
                       : ""}
                   </TableCell>
                   <TableCell>
-                    {row.createdData
-                      ? new Date(row.createdData).toLocaleDateString()
+                    {row.created_at
+                      ? new Date(row.created_at).toLocaleDateString()
                       : ""}
                   </TableCell>
                 </TableRow>

@@ -13,30 +13,20 @@ SET
 
 -- Create a new employees table with updated schema
 CREATE TABLE
-  employees (
-    id INT PRIMARY KEY,
-    name VARCHAR(100) CHARACTER
-    SET
-      utf8mb4 COLLATE utf8mb4_unicode_ci,
-      gender VARCHAR(10) CHARACTER
-    SET
-      utf8mb4 COLLATE utf8mb4_unicode_ci,
-      birthDate DATE,
-      region VARCHAR(50) CHARACTER
-    SET
-      utf8mb4 COLLATE utf8mb4_unicode_ci,
-      role VARCHAR(100) CHARACTER
-    SET
-      utf8mb4 COLLATE utf8mb4_unicode_ci,
-      startDate DATE,
-      endDate DATE DEFAULT NULL,
-      createdData DATE DEFAULT NULL,
-      transferPerson VARCHAR(100) CHARACTER
-    SET
-      utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
-  ) CHARACTER
-SET
-  utf8mb4 COLLATE utf8mb4_unicode_ci;
+  EmployeeBasicInfo (
+    employee_id VARCHAR(50) NOT NULL PRIMARY KEY, -- 員工編號 (Primary key)
+    employee_name VARCHAR(100) NOT NULL, -- 員工姓名
+    gender VARCHAR(10) NOT NULL, -- 性別 (Gender as VARCHAR for flexibility)
+    birthDate DATE, -- 出生年月日
+    region VARCHAR(100), -- 所屬區域
+    role VARCHAR(100), -- 職稱
+    date_of_hire DATE, -- 入職日期
+    date_of_resignation DATE, -- 離職日期
+    handover_staff VARCHAR(100), -- 交接人員
+    note BOOLEAN DEFAULT FALSE, -- 註銷
+    created_at DATE, -- 建立日期
+    updated_at DATE -- 更新日期
+  ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- Create a new CompanyInfo table with updated schema
 CREATE TABLE
@@ -55,7 +45,7 @@ CREATE TABLE
     delivery_address VARCHAR(255), -- 交貨地址
     note TEXT, -- 註記
     registration BOOLEAN DEFAULT FALSE, -- 註記 checkbox
-    creation_date DATE NOT NULL DEFAULT CURRENT_DATE -- 建立日期
+    created_at DATE -- 建立日期
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- Create a new MaterialInfo table with updated schema
@@ -65,8 +55,8 @@ CREATE TABLE
     material_name VARCHAR(100) NOT NULL, -- 材質名稱
     material_cost DECIMAL(10, 2) NOT NULL, -- 素材成本
     unit_name VARCHAR(50) NOT NULL, -- 單位名稱
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation timestamp
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Last updated timestamp
+    created_at DATE, -- Creation timestamp
+    updated_at DATE -- Last updated timestamp
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- Create a new OutsourcingVendor table with updated schema
@@ -84,7 +74,7 @@ CREATE TABLE
     transaction_details TEXT, -- 交易內容
     note TEXT, -- 註記
     registration BOOLEAN DEFAULT FALSE, -- 註記 checkbox
-    creation_date DATE NOT NULL DEFAULT CURRENT_DATE -- 建立日期
+    created_at DATE -- 建立日期
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- Create a new CentralDrawingNumber table with updated schema
@@ -100,7 +90,7 @@ CREATE TABLE
     customer_number VARCHAR(100), -- 客戶圖號
     customer_part_number VARCHAR(100), -- 客戶料號
     drawing_assignee VARCHAR(100), -- 製圖擔當
-    creation_date DATE NOT NULL DEFAULT CURRENT_DATE -- 建立日期
+    created_at DATE -- 建立日期
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE
@@ -136,13 +126,13 @@ CREATE TABLE
     lathe BOOLEAN DEFAULT FALSE, -- 車床
     milling_machine BOOLEAN DEFAULT FALSE, -- 銑床
     cnc BOOLEAN DEFAULT FALSE, -- CNC
-    manual BOOLEAN DEFAULT FALSE, -- 手工
+    `manual` BOOLEAN DEFAULT FALSE, -- 手工
     saw BOOLEAN DEFAULT FALSE, -- 鋸床
     backup_field1 BOOLEAN DEFAULT FALSE, -- backupfield (adjust later)
     backup_field2 BOOLEAN DEFAULT FALSE, -- backupfield2 (adjust later)
     backup_field3 BOOLEAN DEFAULT FALSE, -- backupfield3 (adjust later)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation timestamp
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Last updated timestamp
+    created_at DATE, -- Creation timestamp
+    updated_at DATE -- Last updated timestamp
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- Create a new OrderApproval table with updated schema
@@ -170,6 +160,6 @@ CREATE TABLE
     processing_content TEXT, -- 加工內容
     note BOOLEAN DEFAULT FALSE, -- 註銷
     business_manager_approval BOOLEAN DEFAULT FALSE, -- 業務經理簽核
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 建立日期
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- 更新日期
+    created_at DATE, -- 建立日期
+    updated_at DATE -- 更新日期
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
