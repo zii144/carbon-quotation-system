@@ -22,6 +22,7 @@ import {
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRef } from "react";
 
 interface Employee {
   employee_id: number | string;
@@ -55,6 +56,10 @@ export default function EmployeeInfoForm() {
       // Select and fill form only if the row isn't already selected
       setSelectedRow(employee.employee_id);
       handleRowSelectedData(employee);
+      alert(
+        `選擇員工: ${employee.employee_name}，請在輸入欄位中更改資料，然後點擊「修改」，以套用更動`
+      );
+      scrollToTop();
     } else {
       // Deselect row
       setSelectedRow("");
@@ -333,8 +338,21 @@ export default function EmployeeInfoForm() {
     );
   };
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+  };
+
   return (
-    <Container maxWidth="lg" sx={{ mt: 2 }}>
+    <Container
+      ref={containerRef}
+      maxWidth="lg"
+      className="parent-container"
+      sx={{ mt: 2, height: "100%", overflowY: "auto" }}
+    >
       <Box sx={{ textAlign: "right", mb: 2 }}>
         <Typography variant="body1">
           建立日期: {new Date().toLocaleDateString("zh-TW")}
