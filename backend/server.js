@@ -152,17 +152,26 @@ app.put("/api/employees/:id", (req, res) => {
 });
 
 // API to delete employee data
-app.delete("/api/employees/:id", (req, res) => {
+app.delete("/api/employees/:id", async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const { id } = req.params;
-  const sql = "DELETE FROM EmployeeBasicInfo WHERE id = ?";
-  db.query(sql, [id], (err) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send("Error deleting employee");
+
+  // Validate that `id` is not empty and matches a specific format if needed
+  if (!id || typeof id !== "string") {
+    return res.status(400).json({ error: "Invalid employee ID format" });
+  }
+
+  const sql = "DELETE FROM EmployeeBasicInfo WHERE employee_id = ?";
+  try {
+    const [result] = await db.promise().query(sql, [id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Employee not found" });
     }
-    res.send("Employee deleted");
-  });
+    res.status(200).json({ message: "Employee deleted successfully" });
+  } catch (err) {
+    console.error("Database Error: ", err);
+    res.status(500).json({ error: "An internal error occurred." });
+  }
 });
 
 // API to validate login credentials
