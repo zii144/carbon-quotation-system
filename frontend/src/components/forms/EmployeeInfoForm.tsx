@@ -164,13 +164,6 @@ export default function EmployeeInfoForm() {
     date_of_hire: false,
   });
 
-  const highlightErrorFields = () => {
-    return {
-      borderColor: "red",
-      borderWidth: 2,
-    };
-  };
-
   // Handle Add Employee
   const handleAddEmployee = () => {
     const newEmployee: Employee = {
@@ -203,8 +196,8 @@ export default function EmployeeInfoForm() {
       role: !newEmployee.role,
       date_of_hire: !newEmployee.date_of_hire,
     };
+
     console.log("newFormErrors:", newFormErrors);
-    // Show which fields are invalid
     console.log("newEmployee:", newEmployee);
 
     setFormErrors(newFormErrors);
@@ -355,9 +348,10 @@ export default function EmployeeInfoForm() {
             onChange={(e) =>
               setFormValues({ ...formValues, form_employee_id: e.target.value })
             }
-            sx={formErrors.employee_id ? highlightErrorFields() : undefined}
+            error={formErrors.employee_id}
           />
         </Grid>
+
         <Grid item xs={6}>
           <TextField
             fullWidth
@@ -369,7 +363,7 @@ export default function EmployeeInfoForm() {
                 form_employee_name: e.target.value,
               })
             }
-            sx={formErrors.employee_name ? highlightErrorFields() : undefined}
+            error={formErrors.employee_name}
           />
         </Grid>
 
@@ -381,7 +375,7 @@ export default function EmployeeInfoForm() {
               onChange={(e) => {
                 setFormValues({ ...formValues, form_gender: e.target.value });
               }}
-              sx={formErrors.gender ? highlightErrorFields() : undefined}
+              error={formErrors.gender}
             >
               <MenuItem value="男">男</MenuItem>
               <MenuItem value="女">女</MenuItem>
@@ -407,25 +401,20 @@ export default function EmployeeInfoForm() {
             InputLabelProps={{
               shrink: true,
             }}
-            sx={formErrors.birthDate ? highlightErrorFields() : undefined}
+            error={formErrors.birthDate}
           />
         </Grid>
 
         <Grid item xs={6}>
           <FormControl fullWidth>
-            <InputLabel
-              shrink={!!formValues.form_role}
-              sx={formErrors.role ? highlightErrorFields() : undefined}
-            >
-              職稱
-            </InputLabel>
+            <InputLabel shrink={!!formValues.form_role}>職稱</InputLabel>
             <Select
               value={formValues.form_role}
               onChange={(e) => {
                 setFormValues({ ...formValues, form_role: e.target.value });
               }}
               displayEmpty
-              sx={formErrors.role ? highlightErrorFields() : undefined}
+              error={formErrors.role}
             >
               <MenuItem value=""> </MenuItem>
               <MenuItem value="總經理">總經理</MenuItem>
@@ -443,7 +432,7 @@ export default function EmployeeInfoForm() {
               onChange={(e) => {
                 setFormValues({ ...formValues, form_region: e.target.value });
               }}
-              sx={formErrors.region ? highlightErrorFields() : undefined}
+              error={formErrors.region}
             >
               <MenuItem value="全區">全區</MenuItem>
               <MenuItem value="中區">中區</MenuItem>
@@ -471,7 +460,7 @@ export default function EmployeeInfoForm() {
             InputLabelProps={{
               shrink: true,
             }}
-            sx={formErrors.date_of_hire ? highlightErrorFields() : undefined}
+            error={formErrors.date_of_hire}
           />
         </Grid>
 
@@ -495,6 +484,7 @@ export default function EmployeeInfoForm() {
             InputLabelProps={{
               shrink: true,
             }}
+            helperText="非必填"
           />
         </Grid>
 
@@ -509,6 +499,7 @@ export default function EmployeeInfoForm() {
                 form_handover_staff: e.target.value,
               })
             }
+            helperText="非必填"
           />
         </Grid>
 
