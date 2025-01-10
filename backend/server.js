@@ -103,42 +103,45 @@ app.post("/api/employees", (req, res) => {
 app.put("/api/employees/:id", (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const {
-    name,
+    employee_id,
+    employee_name,
     gender,
     birthDate,
     region,
     role,
-    startDate,
-    endDate,
-    createdData,
-    transferPerson,
+    date_of_hire,
+    date_of_resignation,
+    handover_staff,
+    updated_at,
   } = req.body;
   const sql = `
     UPDATE EmployeeBasicInfo
     SET
-      name = ?,
+      employee_id = ?,
+      employee_name = ?,
       gender = ?,
       birthDate = ?,
       region = ?,
       role = ?,
-      startDate = ?,
-      endDate = ?,
-      createdData = ?,
-      transferPerson = ?
-    WHERE id = ?
+      date_of_hire = ?,
+      date_of_resignation = ?,
+      handover_staff = ?,
+      updated_at = ?
+    WHERE employee_id = ?
   `;
   db.query(
     sql,
     [
-      name,
+      employee_id,
+      employee_name,
       gender,
       birthDate,
       region,
       role,
-      startDate,
-      endDate || null,
-      createdData,
-      transferPerson || null,
+      date_of_hire,
+      date_of_resignation,
+      handover_staff || null,
+      updated_at,
       req.params.id,
     ],
     (err) => {

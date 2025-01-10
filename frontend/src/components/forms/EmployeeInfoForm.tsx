@@ -32,7 +32,7 @@ interface Employee {
   role: string;
   date_of_hire: string | null;
   date_of_resignation: string | null;
-  created_at: string;
+  created_at?: string;
   handover_staff?: string;
   updated_at: string;
 }
@@ -232,28 +232,38 @@ export default function EmployeeInfoForm() {
       alert("請選擇要修改的員工");
       return;
     }
-    const updatedEmployee = {
-      name: formValues.form_employee_name,
+
+    const updatedEmployee: Employee = {
+      employee_id: formValues.form_employee_id,
+      employee_name: formValues.form_employee_name,
       gender: formValues.form_gender,
-      birthDate: formValues.form_birthDate,
+      birthDate: formValues.form_birthDate
+        ? formValues.form_birthDate.toISOString().split("T")[0]
+        : null,
       region: formValues.form_region,
       role: formValues.form_role,
-      startDate: formValues.form_date_of_hire,
-      endDate: formValues.form_date_of_resignation,
-      createdData: formValues.form_created_at,
-      transferPerson: formValues.form_handover_staff,
+      date_of_hire: formValues.form_date_of_hire
+        ? formValues.form_date_of_hire.toISOString().split("T")[0]
+        : null,
+      date_of_resignation: formValues.form_date_of_resignation
+        ? formValues.form_date_of_resignation.toISOString().split("T")[0]
+        : null,
+      handover_staff: formValues.form_handover_staff || "",
+      updated_at: new Date().toISOString().split("T")[0],
     };
 
+    console.log("updatedEmployee:", updatedEmployee);
+
     axios
-      .put(`/api/employees/${selectedRow}`, updatedEmployee)
+      .put(`/api/employees/${updatedEmployee.employee_id}`, updatedEmployee)
       .then(() => {
-        alert("員工更新成功");
+        alert("員工更新成功，員工編號: " + updatedEmployee.employee_id);
         handleClearFields();
         fetchEmployeeData();
       })
       .catch((error) => {
         console.error("Error updating employee:", error);
-        alert("更新失敗");
+        alert("更新失敗！");
       });
   };
 
@@ -289,12 +299,6 @@ export default function EmployeeInfoForm() {
     },
     {
       text: "清除資料",
-      variant: "outlined",
-      color: "primary",
-      onClick: handleClearFields,
-    },
-    {
-      text: "取消",
       variant: "outlined",
       color: "primary",
       onClick: handleClearFields,
