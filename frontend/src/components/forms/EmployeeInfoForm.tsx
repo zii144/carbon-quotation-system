@@ -55,11 +55,11 @@ export default function EmployeeInfoForm() {
     if (!isRowSelected) {
       // Select and fill form only if the row isn't already selected
       setSelectedRow(employee.employee_id);
+      scrollToTop();
       handleRowSelectedData(employee);
       alert(
         `選擇員工: ${employee.employee_name}，請在輸入欄位中更改資料，然後點擊「修改」，以套用更動`
       );
-      scrollToTop();
     } else {
       // Deselect row
       setSelectedRow("");
@@ -122,6 +122,17 @@ export default function EmployeeInfoForm() {
       });
   };
 
+  // Form Validation
+  const [formErrors, setFormErrors] = useState({
+    employee_id: false,
+    employee_name: false,
+    gender: false,
+    birthDate: false,
+    region: false,
+    role: false,
+    date_of_hire: false,
+  });
+
   // Clear Form Fields
   const handleClearFields = () => {
     setFormValues({
@@ -136,6 +147,16 @@ export default function EmployeeInfoForm() {
       form_created_at: null,
       form_handover_staff: "",
     });
+    setFormErrors({
+      employee_id: false,
+      employee_name: false,
+      gender: false,
+      birthDate: false,
+      region: false,
+      role: false,
+      date_of_hire: false,
+    });
+    setSelectedRow("");
   };
 
   // DELETE Employee
@@ -145,29 +166,36 @@ export default function EmployeeInfoForm() {
       return;
     }
 
+    const selectedEmployee = employeeData.find(
+      (employee) => employee.employee_id === selectedRow
+    );
+
+    if (!selectedEmployee) {
+      alert("找不到要刪除的員工");
+      return;
+    }
+
+    const isConfirmed = window.confirm(
+      `確定要刪除員工: ${selectedEmployee.employee_name} 嗎?`
+    );
+
+    if (!isConfirmed) {
+      return;
+    }
+
     axios
       .delete(`/api/employees/${selectedRow}`)
       .then(() => {
-        alert("已刪除員工");
+        alert("成功刪除員工>" + selectedEmployee.employee_name);
         setSelectedRow("");
         handleClearFields();
         fetchEmployeeData();
       })
       .catch((error) => {
         console.error("Error deleting employee:", error);
-        alert("刪除失敗");
+        alert("刪除員工失敗");
       });
   };
-
-  const [formErrors, setFormErrors] = useState({
-    employee_id: false,
-    employee_name: false,
-    gender: false,
-    birthDate: false,
-    region: false,
-    role: false,
-    date_of_hire: false,
-  });
 
   // Handle Add Employee
   const handleAddEmployee = () => {
@@ -268,7 +296,7 @@ export default function EmployeeInfoForm() {
       })
       .catch((error) => {
         console.error("Error updating employee:", error);
-        alert("更新失敗！");
+        alert("員工資料更新失敗！");
       });
   };
 
@@ -303,13 +331,13 @@ export default function EmployeeInfoForm() {
       disabled: false,
     },
     {
-      text: "清除資料",
+      text: "清除欄位",
       variant: "outlined",
       color: "primary",
       onClick: handleClearFields,
     },
     {
-      text: "取得資料",
+      text: "刷新資料表",
       variant: "outlined",
       color: "primary",
       onClick: fetchEmployeeData,

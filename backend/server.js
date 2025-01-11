@@ -40,6 +40,8 @@ db.connect((err) => {
   db.query("SET CHARACTER SET utf8mb4;");
 });
 
+//* CURD APIs For EmployeeBasicInfo
+//#region EmployeeBasicInfo
 // API to fetch employee data
 app.get("/api/employees", (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -176,7 +178,161 @@ app.delete("/api/employees/:id", async (req, res) => {
     res.status(500).json({ error: "An internal error occurred." });
   }
 });
+//#endregion
 
+// TODO: CRUD APIs For CompanyInfo
+//#region CompanyInfo
+// API to fetch company data
+app.get("/api/companies", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const sql = "SELECT * FROM CompanyInfo";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// API to add company data
+app.post("/api/companies", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const {
+    unified_number,
+    business_assignee,
+    company_name,
+    contact_person,
+    department,
+    contact_phone,
+    fax_number,
+    contact_email,
+    company_address,
+    delivery_address,
+    created_at,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO CompanyInfo (
+      unified_number, business_assignee, company_name, contact_person, mobile_phone, department, contact_phone, fax_number, contact_email, company_address, delivery_address, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  db.query(
+    sql,
+    [
+      unified_number,
+      business_assignee,
+      company_name,
+      contact_person,
+      mobile_phone,
+      department,
+      contact_phone,
+      fax_number,
+      contact_email,
+      company_address,
+      delivery_address,
+      created_at,
+    ],
+    (err) => {
+      if (err) {
+        console.log("Error adding company:", err.message);
+        return res.status(500).send(`Error adding company: ${err.message}`);
+      }
+      res.send("Company added");
+    }
+  );
+});
+
+// API to update company data
+app.put("/api/companies/:unified_number", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const {
+    unified_number,
+    business_assignee,
+    company_name,
+    contact_person,
+    department,
+    contact_phone,
+    fax_number,
+    contact_email,
+    company_address,
+    delivery_address,
+    created_at,
+  } = req.body;
+  const sql = `
+    UPDATE CompanyInfo
+    SET
+      unified_number = ?,
+      business_assignee = ?,
+      company_name = ?,
+      contact_person = ?,
+      department = ?,
+      contact_phone = ?,
+      fax_number = ?,
+      contact_email = ?,
+      company_address = ?,
+      delivery_address = ?,
+      created_at = ?
+    WHERE unified_number = ?
+  `;
+  db.query(
+    sql,
+    [
+      unified_number,
+      business_assignee,
+      company_name,
+      contact_person,
+      mobile_phone,
+      department,
+      contact_phone,
+      fax_number,
+      contact_email,
+      company_address,
+      delivery_address,
+      created_at,
+    ],
+    (err) => {
+      if (err) {
+        console.error("Error updating company:", err.message);
+        return res.status(500).send(`Error updating company: ${err.message}`);
+      }
+      res.send("Company updated");
+    }
+  );
+});
+
+// API to delete company data
+app.delete("/api/companies/:unified_number", async (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const { unified_number } = req.params;
+
+  const sql = "DELETE FROM CompanyInfo WHERE unified_number = ?";
+  try {
+    const [result] = await db.promise().query(sql, [unified_number]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Company not found" });
+    }
+    res.status(200).json({ message: "Company deleted successfully" });
+  } catch (err) {
+    console.error("Database Error: ", err);
+    res.status(500).json({ error: "An internal error occurred." });
+  }
+});
+
+//#endregion
+
+// TODO: CRUD APIs For MaterialInfo
+
+// TODO: CRUD APIs For OutsourcingVendor
+
+// TODO: CRUD APIs For CentralDrawingNumber
+
+// TODO: CRUD APIs For CostEntry
+
+// TODO: CRUD APIs For OrderApproval
+
+//#region Login
 // API to validate login credentials
 app.post("/api/login", (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -195,6 +351,7 @@ app.post("/api/login", (req, res) => {
     }
   });
 });
+//#endregion
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
