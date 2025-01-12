@@ -13,6 +13,7 @@ import {
   Checkbox,
   FormControlLabel,
   ButtonProps,
+  InputAdornment,
 } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
@@ -850,6 +851,13 @@ export default function CostEntryForm() {
               });
             }}
             error={formErrors.form_tariff}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">TWD </InputAdornment>
+                ),
+              },
+            }}
             fullWidth
             label="關稅 ($)"
           />
@@ -877,6 +885,13 @@ export default function CostEntryForm() {
               });
             }}
             error={formErrors.form_shipping_cost}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">TWD </InputAdornment>
+                ),
+              },
+            }}
             fullWidth
             label="運費 ($)"
           />
@@ -904,6 +919,13 @@ export default function CostEntryForm() {
               });
             }}
             error={formErrors.form_material_cost}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">TWD </InputAdornment>
+                ),
+              },
+            }}
             fullWidth
             label="素材成本 ($)"
           />
@@ -933,6 +955,13 @@ export default function CostEntryForm() {
               });
             }}
             error={formErrors.form_blade_cost}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">TWD </InputAdornment>
+                ),
+              },
+            }}
             fullWidth
             label="刀具成本 ($)"
           />
@@ -976,6 +1005,13 @@ export default function CostEntryForm() {
               });
             }}
             error={formErrors.form_mold_cost}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">TWD </InputAdornment>
+                ),
+              },
+            }}
             fullWidth
             label="模具成本 ($)"
           />
@@ -1019,6 +1055,13 @@ export default function CostEntryForm() {
               });
             }}
             error={formErrors.form_other_cost}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">TWD </InputAdornment>
+                ),
+              },
+            }}
             fullWidth
             label="其他成本 ($)"
           />
@@ -1048,6 +1091,13 @@ export default function CostEntryForm() {
               })
             }
             error={formErrors.form_total_cost}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">TWD </InputAdornment>
+                ),
+              },
+            }}
             fullWidth
             label="合計 ($)"
             disabled
@@ -1289,6 +1339,13 @@ export default function CostEntryForm() {
                 }
                 error={formErrors.form_processing_cost}
                 label="加工成本 $"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">TWD </InputAdornment>
+                    ),
+                  },
+                }}
                 fullWidth
                 margin="dense"
               />
@@ -1315,6 +1372,13 @@ export default function CostEntryForm() {
                 }
                 error={formErrors.form_outsourcing_cost}
                 label="委外成本 $"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">TWD </InputAdornment>
+                    ),
+                  },
+                }}
                 fullWidth
                 margin="dense"
               />
@@ -1330,6 +1394,13 @@ export default function CostEntryForm() {
                 }
                 error={formErrors.form_processing_and_outsourcing_total}
                 label="加工時間及委外成本合計 $"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">TWD </InputAdornment>
+                    ),
+                  },
+                }}
                 fullWidth
                 margin="dense"
                 disabled
@@ -1359,6 +1430,13 @@ export default function CostEntryForm() {
                 }
                 error={formErrors.form_total_final_cost}
                 label="總成本合計 $"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">TWD </InputAdornment>
+                    ),
+                  },
+                }}
                 fullWidth
                 margin="dense"
                 sx={{ mt: 1.5 }}
