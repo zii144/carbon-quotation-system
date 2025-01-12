@@ -48,18 +48,35 @@ export default function QuotationPage() {
   const CurrentFormComponent = componentMap[currentTitle];
 
   return (
-    <Container maxWidth="lg" sx={{ ml: 0 }}>
-      <Grid container spacing={3}>
+    <Container maxWidth="lg" sx={{ ml: -5, mr: -5 }}>
+      <Grid container spacing={2}>
         {/* Sidebar Section */}
         <Grid item xs={3}>
-          <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 2,
+              mb: 2,
+              width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
+            }}
+          >
             <Typography variant="h6">未/已取單數量</Typography>
             <Typography variant="body1">未取單: 0</Typography>
             <Typography variant="body1">已取單: 0</Typography>
           </Paper>
 
-          <Paper elevation={3} sx={{ p: 2 }}>
-            <Typography variant="h6">資料處理</Typography>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 2,
+              width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
+              height: { xs: "70vh", sm: "75vh", md: "65vh", lg: "52vh" },
+              position: "sticky",
+              top: "10px",
+              overflowY: "auto",
+            }}
+          >
+            <Typography variant="h6">資料處理列表</Typography>
             {sidebarItems.map((item) => (
               <SidebarButton
                 key={item}
@@ -73,11 +90,21 @@ export default function QuotationPage() {
 
         {/* Main Content Section */}
         <Grid item xs={9}>
-          <Paper elevation={3} sx={{ p: 3, width: "140%" }}>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 3,
+              width: { xs: "60vw", sm: "68vw", md: "70vw", lg: "76vw" },
+              height: { xs: "70vh", sm: "75vh", md: "80vh", lg: "85vh" },
+              position: "sticky",
+              top: "10px",
+              overflowY: "auto",
+            }}
+          >
             <Typography variant="h5" gutterBottom>
               {currentTitle}
             </Typography>
-            <Box sx={{ height: "800px", overflowY: "auto" }}>
+            <Box sx={{ p: 0, overflowY: "auto" }}>
               {CurrentFormComponent && <CurrentFormComponent />}
             </Box>
           </Paper>

@@ -379,7 +379,7 @@ export default function EmployeeInfoForm() {
       ref={containerRef}
       maxWidth="lg"
       className="parent-container"
-      sx={{ mt: 2, height: "100%", overflowY: "auto" }}
+      sx={{ p: 0, mt: 2, height: "100%", overflowY: "auto" }}
     >
       <Box sx={{ textAlign: "right", mb: 2 }}>
         <Typography variant="body1">

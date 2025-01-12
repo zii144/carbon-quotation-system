@@ -6,7 +6,7 @@ const FullScreenLayout = ({ children }) => {
         justifyContent: "flex-start", // Align children to the left
         alignItems: "center", // Keep children vertically centered
         height: "100vh",
-        width: "100%",
+        width: "100vw",
         paddingLeft: "3%",
         paddingRight: "3%",
         background:
