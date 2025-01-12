@@ -109,7 +109,7 @@ export default function CompanyInfoForm() {
     setSelectedRow("");
   };
 
-  // TODO: Implement api/companys in server.js
+  //?? Fetch Company Data
   const fetchCompanyData = async () => {
     axios
       .get("/api/companies", {

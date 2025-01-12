@@ -180,7 +180,7 @@ app.delete("/api/employees/:id", async (req, res) => {
 });
 //#endregion
 
-// TODO: CRUD APIs For CompanyInfo
+//*CRUD APIs For CompanyInfo
 //#region CompanyInfo
 // API to fetch company data
 app.get("/api/companies", (req, res) => {
@@ -327,6 +327,82 @@ app.delete("/api/companies/:unified_number", async (req, res) => {
 //#endregion
 
 // TODO: CRUD APIs For MaterialInfo
+//#region MaterialInfo
+// API to fetch material data
+app.get("/api/materials", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const sql = "SELECT * FROM MaterialInfo";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// API to add material data
+app.post("/api/materials", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const { material_name, material_cost, unit_name } = req.body;
+
+  const sql = `
+    INSERT INTO MaterialInfo (
+      material_name, material_cost, unit_name
+    ) VALUES (?, ?, ?)
+  `;
+  db.query(sql, [material_name, material_cost, unit_name], (err) => {
+    if (err) {
+      console.log("Error adding material:", err.message);
+      return res.status(500).send(`Error adding material: ${err.message}`);
+    }
+    res.send("Material added");
+  });
+});
+
+// API to update material data
+app.put("/api/companies/:id", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const { material_name, material_cost, unit_name } = req.body;
+  const sql = `
+    UPDATE MaterialInfo
+    SET
+      material_name = ?,
+      material_cost = ?,
+      unit_name = ?
+    WHERE id = ?
+  `;
+  db.query(
+    sql,
+    [material_name, material_cost, unit_name, req.params.id],
+    (err) => {
+      if (err) {
+        console.error("Error updating material:", err.message);
+        return res.status(500).send(`Error updating material: ${err.message}`);
+      }
+      res.send("Materail updated");
+    }
+  );
+});
+
+// API to delete material data
+app.delete("/api/companies/:id", async (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const { id } = req.params;
+
+  const sql = "DELETE FROM MaterialInfo WHERE id = ?";
+  try {
+    const [result] = await db.promise().query(sql, [id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Material not found" });
+    }
+    res.status(200).json({ message: "Material deleted successfully" });
+  } catch (err) {
+    console.error("Database Error: ", err);
+    res.status(500).json({ error: "An internal error occurred." });
+  }
+});
 
 // TODO: CRUD APIs For OutsourcingVendor
 
