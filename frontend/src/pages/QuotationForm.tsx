@@ -125,16 +125,15 @@ export default function QuotationPage() {
       {/* Floating Action Button */}
       <Fab
         color="primary"
-        aria-label="toggle-sidebar"
+        aria-label={showSidebar ? "Hide Sidebar" : "Show Sidebar"}
         sx={{
           position: "fixed",
-          bottom: "20px",
-          right: "20px", // Place FAB in the bottom-right corner
+          bottom: "40px",
+          left: "30px",
         }}
-        onClick={() => setShowSidebar(!showSidebar)} // Toggle sidebar visibility
+        onClick={() => setShowSidebar(!showSidebar)}
       >
-        {showSidebar ? <CloseIcon /> : <MenuIcon />}{" "}
-        {/* Change icon based on state */}
+        {showSidebar ? <CloseIcon /> : <MenuIcon />}
       </Fab>
     </Container>
   );
