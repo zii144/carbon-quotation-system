@@ -204,6 +204,7 @@ app.post("/api/companies", (req, res) => {
     business_assignee,
     company_name,
     contact_person,
+    mobile_phone,
     department,
     contact_phone,
     fax_number,
@@ -252,6 +253,7 @@ app.put("/api/companies/:unified_number", (req, res) => {
     business_assignee,
     company_name,
     contact_person,
+    mobile_phone,
     department,
     contact_phone,
     fax_number,
@@ -267,6 +269,7 @@ app.put("/api/companies/:unified_number", (req, res) => {
       business_assignee = ?,
       company_name = ?,
       contact_person = ?,
+      mobile_phone = ?,
       department = ?,
       contact_phone = ?,
       fax_number = ?,
@@ -291,6 +294,7 @@ app.put("/api/companies/:unified_number", (req, res) => {
       company_address,
       delivery_address,
       created_at,
+      req.params.unified_number,
     ],
     (err) => {
       if (err) {

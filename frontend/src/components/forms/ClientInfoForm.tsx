@@ -35,7 +35,6 @@ interface Company {
   contact_email: string;
   company_address: string;
   delivery_address: string;
-  registration: boolean;
   created_at: string;
 }
 
@@ -138,7 +137,7 @@ export default function CompanyInfoForm() {
       contact_email: formValues.form_contact_email,
       company_address: formValues.form_company_address,
       delivery_address: formValues.form_delivery_address,
-      registration: formValues.form_registration,
+      //registration: formValues.form_registration,
       created_at: new Date().toISOString().split("T")[0],
     };
 
@@ -205,7 +204,6 @@ export default function CompanyInfoForm() {
       contact_email: formValues.form_contact_email,
       company_address: formValues.form_company_address,
       delivery_address: formValues.form_delivery_address,
-      registration: formValues.form_registration,
       created_at: new Date().toISOString().split("T")[0],
     };
 
@@ -366,7 +364,7 @@ export default function CompanyInfoForm() {
       form_contact_email: company.contact_email,
       form_company_address: company.company_address,
       form_delivery_address: company.delivery_address,
-      form_registration: company.registration,
+      form_registration: false,
     });
   };
   //#endregion Row Selection Handlers
@@ -613,7 +611,6 @@ export default function CompanyInfoForm() {
                 <TableCell>聯絡MAIL</TableCell>
                 <TableCell>公司地址</TableCell>
                 <TableCell>交貨地址</TableCell>
-                <TableCell>註記</TableCell>
                 <TableCell>建立日期</TableCell>
               </TableRow>
             </TableHead>
