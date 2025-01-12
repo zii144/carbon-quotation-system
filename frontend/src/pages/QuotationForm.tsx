@@ -1,4 +1,7 @@
-import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Container, Grid, Paper, Typography, Fab } from "@mui/material";
+
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 
 import SidebarButton from "../components/quotation/SidebarButton";
 
@@ -32,6 +35,7 @@ const componentMap: ComponentMapType = {
 
 export default function QuotationPage() {
   const [currentTitle, setCurrentTitle] = useState("員工基本資料");
+  const [showSidebar, setShowSidebar] = useState(true);
 
   const sidebarItems = [
     "員工基本資料",
@@ -51,50 +55,57 @@ export default function QuotationPage() {
     <Container maxWidth="lg" sx={{ ml: -5, mr: -5 }}>
       <Grid container spacing={2}>
         {/* Sidebar Section */}
-        <Grid item xs={3}>
-          <Paper
-            elevation={3}
-            sx={{
-              p: 2,
-              mb: 2,
-              width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
-            }}
-          >
-            <Typography variant="h6">未/已取單數量</Typography>
-            <Typography variant="body1">未取單: 0</Typography>
-            <Typography variant="body1">已取單: 0</Typography>
-          </Paper>
+        {showSidebar && (
+          <Grid item xs={3}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 2,
+                mb: 2,
+                width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
+              }}
+            >
+              <Typography variant="h6">未/已取單數量</Typography>
+              <Typography variant="body1">未取單: 0</Typography>
+              <Typography variant="body1">已取單: 0</Typography>
+            </Paper>
 
-          <Paper
-            elevation={3}
-            sx={{
-              p: 2,
-              width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
-              height: { xs: "70vh", sm: "75vh", md: "65vh", lg: "52vh" },
-              position: "sticky",
-              top: "10px",
-              overflowY: "auto",
-            }}
-          >
-            <Typography variant="h6">資料處理列表</Typography>
-            {sidebarItems.map((item) => (
-              <SidebarButton
-                key={item}
-                title={item}
-                currentTitle={currentTitle}
-                SetCurrentTitle={setCurrentTitle}
-              />
-            ))}
-          </Paper>
-        </Grid>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 2,
+                width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
+                height: { xs: "70vh", sm: "75vh", md: "65vh", lg: "52vh" },
+                position: "sticky",
+                top: "10px",
+                overflowY: "auto",
+              }}
+            >
+              <Typography variant="h6">資料處理列表</Typography>
+              {sidebarItems.map((item) => (
+                <SidebarButton
+                  key={item}
+                  title={item}
+                  currentTitle={currentTitle}
+                  SetCurrentTitle={setCurrentTitle}
+                />
+              ))}
+            </Paper>
+          </Grid>
+        )}
 
         {/* Main Content Section */}
-        <Grid item xs={9}>
+        <Grid item xs={showSidebar ? 9 : 12}>
           <Paper
             elevation={3}
             sx={{
               p: 3,
-              width: { xs: "60vw", sm: "68vw", md: "70vw", lg: "76vw" },
+              width: {
+                xs: "60vw",
+                sm: "68vw",
+                md: "70vw",
+                lg: showSidebar ? "76vw" : "93vw",
+              },
               height: { xs: "70vh", sm: "75vh", md: "80vh", lg: "85vh" },
               position: "sticky",
               top: "10px",
@@ -110,6 +121,21 @@ export default function QuotationPage() {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* Floating Action Button */}
+      <Fab
+        color="primary"
+        aria-label="toggle-sidebar"
+        sx={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px", // Place FAB in the bottom-right corner
+        }}
+        onClick={() => setShowSidebar(!showSidebar)} // Toggle sidebar visibility
+      >
+        {showSidebar ? <CloseIcon /> : <MenuIcon />}{" "}
+        {/* Change icon based on state */}
+      </Fab>
     </Container>
   );
 }
