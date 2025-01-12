@@ -326,7 +326,7 @@ app.delete("/api/companies/:unified_number", async (req, res) => {
 
 //#endregion
 
-// TODO: CRUD APIs For MaterialInfo
+//* CRUD APIs For MaterialInfo
 //#region MaterialInfo
 // API to fetch material data
 app.get("/api/materials", (req, res) => {
@@ -362,7 +362,7 @@ app.post("/api/materials", (req, res) => {
 });
 
 // API to update material data
-app.put("/api/companies/:id", (req, res) => {
+app.put("/api/materials/:id", (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const { material_name, material_cost, unit_name } = req.body;
   const sql = `
@@ -387,7 +387,7 @@ app.put("/api/companies/:id", (req, res) => {
 });
 
 // API to delete material data
-app.delete("/api/companies/:id", async (req, res) => {
+app.delete("/api/materials/:id", async (req, res) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   const { id } = req.params;
 
@@ -403,11 +403,292 @@ app.delete("/api/companies/:id", async (req, res) => {
     res.status(500).json({ error: "An internal error occurred." });
   }
 });
+//#endregion
 
-// TODO: CRUD APIs For OutsourcingVendor
+//* CRUD APIs For OutsourcingVendor
+//#region OutsourcingVendor
+// API to fetch vendor data
+app.get("/api/vendors", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const sql = "SELECT * FROM OutsourcingVendor";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// API to add vendor data
+app.post("/api/vendors", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const {
+    company_name,
+    unified_number,
+    contact_window,
+    contact_phone,
+    fax_number,
+    contact_email,
+    mobile_phone,
+    company_address,
+    transaction_details,
+    created_at,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO OutsourcingVendor (
+      company_name,
+      unified_number,
+      contact_window,
+      contact_phone,
+      fax_number,
+      contact_email,
+      mobile_phone,
+      company_address,
+      transaction_details,
+      created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  db.query(
+    sql,
+    [
+      company_name,
+      unified_number,
+      contact_window,
+      contact_phone,
+      fax_number,
+      contact_email,
+      mobile_phone,
+      company_address,
+      transaction_details,
+      created_at,
+    ],
+    (err) => {
+      if (err) {
+        console.log("Error adding vendor:", err.message);
+        return res.status(500).send(`Error adding vendor: ${err.message}`);
+      }
+      res.send("Vendor added");
+    }
+  );
+});
+
+// API to update vendor data
+app.put("/api/vendors/:unified_number", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const {
+    company_name,
+    unified_number,
+    contact_window,
+    contact_phone,
+    fax_number,
+    contact_email,
+    mobile_phone,
+    company_address,
+    transaction_details,
+  } = req.body;
+  const sql = `
+    UPDATE OutsourcingVendor
+    SET
+      company_name = ?,
+      unified_number = ?,
+      contact_window = ?,
+      contact_phone = ?,
+      fax_number = ?,
+      contact_email = ?,
+      mobile_phone = ?,
+      company_address = ?,
+      transaction_details = ?
+    WHERE unified_number = ?
+  `;
+  db.query(
+    sql,
+    [
+      company_name,
+      unified_number,
+      contact_window,
+      contact_phone,
+      fax_number,
+      contact_email,
+      mobile_phone,
+      company_address,
+      transaction_details,
+      req.params.unified_number,
+    ],
+    (err) => {
+      if (err) {
+        console.error("Error updating vendor:", err.message);
+        return res.status(500).send(`Error updating vendor: ${err.message}`);
+      }
+      res.send("Vendor updated");
+    }
+  );
+});
+
+// API to delete vendor data
+app.delete("/api/vendors/:unified_number", async (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const { unified_number } = req.params;
+
+  const sql = "DELETE FROM OutsourcingVendor WHERE unified_number = ?";
+  try {
+    const [result] = await db.promise().query(sql, [unified_number]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Vendor not found" });
+    }
+    res.status(200).json({ message: "Vendor deleted successfully" });
+  } catch (err) {
+    console.error("Database Error: ", err);
+    res.status(500).json({ error: "An internal error occurred." });
+  }
+});
+//#endregion
 
 // TODO: CRUD APIs For CentralDrawingNumber
+//#region CentralDrawingNumber
+// API to fetch drawing data
+app.get("/api/drawing-numbers", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const sql = "SELECT * FROM CentralDrawingNumber";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.json(results);
+    }
+  });
+});
 
+// API to add drawing data
+app.post("/api/drawing-numbers", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const {
+    business_assignee,
+    drawing_type,
+    drawing_number,
+    customer_name,
+    material,
+    dimensions,
+    customer_number,
+    customer_part_number,
+    drawing_assignee,
+    created_at,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO CentralDrawingNumber (
+      business_assignee,
+      drawing_type,
+      drawing_number,
+      customer_name,
+      material,
+      dimensions,
+      customer_number,
+      customer_part_number,
+      drawing_assignee,
+      created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  db.query(
+    sql,
+    [
+      business_assignee,
+      drawing_type,
+      drawing_number,
+      customer_name,
+      material,
+      dimensions,
+      customer_number,
+      customer_part_number,
+      drawing_assignee,
+      created_at,
+    ],
+    (err) => {
+      if (err) {
+        console.log("Error adding drawing number:", err.message);
+        return res
+          .status(500)
+          .send(`Error adding drawing number: ${err.message}`);
+      }
+      res.send("Drawing number added");
+    }
+  );
+});
+
+// API to drawing data
+app.put("/api/drawing-numbers/:id", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const {
+    business_assignee,
+    drawing_type,
+    drawing_number,
+    customer_name,
+    material,
+    dimensions,
+    customer_number,
+    customer_part_number,
+    drawing_assignee,
+  } = req.body;
+  const sql = `
+    UPDATE CentralDrawingNumber
+    SET
+      business_assignee = ?,
+      drawing_type = ?,
+      drawing_number = ?,
+      customer_name = ?,
+      material = ?,
+      dimensions = ?,
+      customer_number = ?,
+      customer_part_number = ?,
+      drawing_assignee = ?
+    WHERE id = ?
+  `;
+  db.query(
+    sql,
+    [
+      business_assignee,
+      drawing_type,
+      drawing_number,
+      customer_name,
+      material,
+      dimensions,
+      customer_number,
+      customer_part_number,
+      drawing_assignee,
+      req.params.id,
+    ],
+    (err) => {
+      if (err) {
+        console.error("Error updating drawing number:", err.message);
+        return res
+          .status(500)
+          .send(`Error updating drawing number: ${err.message}`);
+      }
+      res.send("Drawing number updated");
+    }
+  );
+});
+
+// API to delete drawing data
+app.delete("/api/drawing-numbers/:id", async (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const { id } = req.params;
+
+  const sql = "DELETE FROM CentralDrawingNumber WHERE id = ?";
+  try {
+    const [result] = await db.promise().query(sql, [id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Drawing number not found" });
+    }
+    res.status(200).json({ message: "Drawing number deleted successfully" });
+  } catch (err) {
+    console.error("Database Error: ", err);
+    res.status(500).json({ error: "An internal error occurred." });
+  }
+});
 // TODO: CRUD APIs For CostEntry
 
 // TODO: CRUD APIs For OrderApproval

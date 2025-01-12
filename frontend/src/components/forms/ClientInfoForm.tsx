@@ -381,6 +381,7 @@ export default function CompanyInfoForm() {
 
   return (
     <Container
+      ref={containerRef}
       maxWidth="lg"
       className="parent-container"
       sx={{ mt: 2, height: "100%", overflowY: "auto" }}

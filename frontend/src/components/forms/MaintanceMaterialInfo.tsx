@@ -177,7 +177,7 @@ export default function MaintenanceMaterialInfoForm() {
     }
 
     axios
-      .delete(`/api/companies/${selectedMaterial.id}`)
+      .delete(`/api/materials/${selectedMaterial.id}`)
       .then(() => {
         alert(`成功刪除材質:: ${selectedMaterial.material_name}`);
         setSelectedRow(undefined);
@@ -301,7 +301,12 @@ export default function MaintenanceMaterialInfoForm() {
   //#endregion Container Move To Top Handler
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 5 }}>
+    <Container
+      ref={containerRef}
+      maxWidth="lg"
+      className="parent-container"
+      sx={{ mt: 5, height: "100%", overflowY: "auto" }}
+    >
       {/* Form Section */}
       <Grid container spacing={2}>
         <Grid item xs={9}>
@@ -315,6 +320,7 @@ export default function MaintenanceMaterialInfoForm() {
             }
             error={formErrors.form_material_name}
             label="材質名稱"
+            fullWidth
           />
         </Grid>
         <Grid item xs={3}>
@@ -345,6 +351,7 @@ export default function MaintenanceMaterialInfoForm() {
             error={formErrors.form_material_cost}
             label="素材成本"
             type="number"
+            fullWidth
           />
         </Grid>
 
