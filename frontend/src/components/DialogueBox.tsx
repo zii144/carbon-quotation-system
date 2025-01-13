@@ -82,13 +82,14 @@ function SimpleDialog(props: SimpleDialogProps) {
 
 export interface QueryButtonProps {
   diaglogTitle: string;
-  onSelectedvalueChanged?: (value: string) => void;
+  onSelectedvalueChanged: (key: string, value: string) => void;
+  fieldKey: string;
 }
 
 export default function QueryButton(props: QueryButtonProps) {
   const [open, setOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(dialogueContent[1]);
-  const { diaglogTitle, onSelectedvalueChanged } = props;
+  const { diaglogTitle, onSelectedvalueChanged, fieldKey } = props;
 
   const handleClicked = () => {
     setOpen(true);
@@ -98,7 +99,7 @@ export default function QueryButton(props: QueryButtonProps) {
     setOpen(false);
     setSelectedValue(value);
     if (onSelectedvalueChanged) {
-      onSelectedvalueChanged(value);
+      onSelectedvalueChanged(fieldKey, value);
     }
   };
 

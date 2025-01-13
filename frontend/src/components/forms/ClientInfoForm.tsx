@@ -381,10 +381,10 @@ export default function CompanyInfoForm() {
   //#endregion Container Move To Top Handler
 
   //?? Handle Selected Value Change
-  const handleSelectedValueChange = (value: string) => {
+  const handleFormChange = (key: string, value: string) => {
     setFormValues({
       ...formValues,
-      form_unified_number: value,
+      [key]: value,
     });
   };
 
@@ -420,7 +420,8 @@ export default function CompanyInfoForm() {
         <Grid item xs={2}>
           <QueryButton
             diaglogTitle="統一編號"
-            onSelectedvalueChanged={handleSelectedValueChange}
+            onSelectedvalueChanged={handleFormChange}
+            fieldKey="form_unified_number"
           />
         </Grid>
 
@@ -443,9 +444,11 @@ export default function CompanyInfoForm() {
           </FormControl>
         </Grid>
         <Grid item xs={2}>
-          <Button variant="outlined" fullWidth sx={{ height: "56px" }}>
-            查 詢
-          </Button>
+          <QueryButton
+            diaglogTitle="業務擔當"
+            onSelectedvalueChanged={handleFormChange}
+            fieldKey="form_business_assignee"
+          />
         </Grid>
 
         <Grid item xs={10}>
@@ -463,9 +466,11 @@ export default function CompanyInfoForm() {
           />
         </Grid>
         <Grid item xs={2}>
-          <Button variant="outlined" fullWidth sx={{ height: "56px" }}>
-            查 詢
-          </Button>
+          <QueryButton
+            diaglogTitle="公司名稱"
+            onSelectedvalueChanged={handleFormChange}
+            fieldKey="form_company_name"
+          />
         </Grid>
 
         <Grid item xs={3}>

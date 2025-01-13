@@ -330,10 +330,10 @@ export default function MaintenanceMaterialInfoForm() {
             gap={2}
             sx={{ height: "56px" }}
           >
-            <Button variant="outlined" sx={{ height: "100%" }}>
+            <Button variant="outlined" sx={{ height: "100%" }} fullWidth>
               Φ
             </Button>
-            <Button variant="outlined" sx={{ height: "100%" }}>
+            <Button variant="outlined" sx={{ height: "100%" }} fullWidth>
               KII
             </Button>
           </Box>

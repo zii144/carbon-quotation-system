@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import QueryButton from "../DialogueBox";
 
 interface Vendor {
   company_name: string;
@@ -352,6 +353,14 @@ export default function OutsourcingVendorForm() {
   };
   //#endregion Container Move To Top Handler
 
+  //?? Handle Selected Value Change
+  const handleFormChange = (key: string, value: string) => {
+    setFormValues({
+      ...formValues,
+      [key]: value,
+    });
+  };
+
   return (
     <Container
       ref={containerRef}
@@ -383,9 +392,11 @@ export default function OutsourcingVendorForm() {
           />
         </Grid>
         <Grid item xs={2}>
-          <Button variant="outlined" fullWidth sx={{ height: "56px" }}>
-            查 詢
-          </Button>
+          <QueryButton
+            diaglogTitle="公司名稱"
+            onSelectedvalueChanged={handleFormChange}
+            fieldKey="form_company_name"
+          />
         </Grid>
 
         <Grid item xs={3}>
@@ -403,9 +414,11 @@ export default function OutsourcingVendorForm() {
           />
         </Grid>
         <Grid item xs={2}>
-          <Button variant="outlined" fullWidth sx={{ height: "56px" }}>
-            查 詢
-          </Button>
+          <QueryButton
+            diaglogTitle="統一編號"
+            onSelectedvalueChanged={handleFormChange}
+            fieldKey="form_unified_number"
+          />
         </Grid>
 
         <Grid item xs={7}>

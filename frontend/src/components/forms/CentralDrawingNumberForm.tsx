@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import QueryButton from "../DialogueBox";
 
 interface DrawingNumber {
   id?: number;
@@ -365,6 +366,14 @@ export default function CentralDrawingNumberForm() {
   };
   //#endregion Container Move To Top Handler
 
+  //?? Handle Selected Value Change
+  const handleFormChange = (key: string, value: string) => {
+    setFormValues({
+      ...formValues,
+      [key]: value,
+    });
+  };
+
   return (
     <Container
       ref={containerRef}
@@ -382,41 +391,51 @@ export default function CentralDrawingNumberForm() {
       {/* Form Section */}
       <Grid container spacing={2}>
         <Grid item xs={3}>
-          <FormControl fullWidth>
-            <InputLabel>業務擔當</InputLabel>
-            <Select
-              value={formValues.form_business_assignee}
-              onChange={(e) =>
-                setFormValues({
-                  ...formValues,
-                  form_business_assignee: e.target.value as string,
-                })
-              }
-              error={formErrors.form_business_assignee}
-            >
-              <MenuItem value="擔當人員A">擔當人員A</MenuItem>
-              <MenuItem value="擔當人員B">擔當人員B</MenuItem>
-            </Select>
-          </FormControl>
+          <TextField
+            value={formValues.form_business_assignee}
+            onChange={(e) =>
+              setFormValues({
+                ...formValues,
+                form_business_assignee: e.target.value as string,
+              })
+            }
+            error={formErrors.form_business_assignee}
+            label="業務擔當"
+            fullWidth
+          >
+            業務擔當
+          </TextField>
+        </Grid>
+        <Grid item xs={1.5}>
+          <QueryButton
+            diaglogTitle="業務擔當"
+            onSelectedvalueChanged={handleFormChange}
+            fieldKey="form_business_assignee"
+          />
         </Grid>
 
         <Grid item xs={3}>
-          <FormControl fullWidth>
-            <InputLabel>圖號-類別</InputLabel>
-            <Select
-              value={formValues.form_drawing_type}
-              onChange={(e) =>
-                setFormValues({
-                  ...formValues,
-                  form_drawing_type: e.target.value as string,
-                })
-              }
-              error={formErrors.form_drawing_type}
-            >
-              <MenuItem value="圖號類別A">圖號類別A</MenuItem>
-              <MenuItem value="圖號類別B">圖號類別B</MenuItem>
-            </Select>
-          </FormControl>
+          <TextField
+            value={formValues.form_drawing_type}
+            onChange={(e) =>
+              setFormValues({
+                ...formValues,
+                form_drawing_type: e.target.value as string,
+              })
+            }
+            error={formErrors.form_drawing_type}
+            label="圖號-類別"
+            fullWidth
+          >
+            圖號-類別
+          </TextField>
+        </Grid>
+        <Grid item xs={1.5}>
+          <QueryButton
+            diaglogTitle="圖號-類別"
+            onSelectedvalueChanged={handleFormChange}
+            fieldKey="form_drawing_type"
+          />
         </Grid>
 
         <Grid item xs={3}>
@@ -486,7 +505,7 @@ export default function CentralDrawingNumberForm() {
             gap={2}
             sx={{ height: "56px" }}
           >
-            <Button variant="outlined" sx={{ height: "100%" }}>
+            <Button variant="outlined" sx={{ height: "100%" }} fullWidth>
               Φ
             </Button>
           </Box>
