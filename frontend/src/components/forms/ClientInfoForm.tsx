@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import QueryButton from "../DialogueBox";
 
 interface Company {
   id?: number | string;
@@ -379,6 +380,14 @@ export default function CompanyInfoForm() {
   };
   //#endregion Container Move To Top Handler
 
+  //?? Handle Selected Value Change
+  const handleSelectedValueChange = (value: string) => {
+    setFormValues({
+      ...formValues,
+      form_unified_number: value,
+    });
+  };
+
   return (
     <Container
       ref={containerRef}
@@ -409,15 +418,15 @@ export default function CompanyInfoForm() {
           />
         </Grid>
         <Grid item xs={2}>
-          <Button variant="outlined" fullWidth sx={{ height: "56px" }}>
-            查 詢
-          </Button>
+          <QueryButton
+            diaglogTitle="統一編號"
+            onSelectedvalueChanged={handleSelectedValueChange}
+          />
         </Grid>
 
         <Grid item xs={5}>
           <FormControl fullWidth>
-            <InputLabel>業務擔當</InputLabel>
-            <Select
+            <TextField
               value={formValues.form_business_assignee}
               onChange={(e) =>
                 setFormValues({
@@ -426,10 +435,11 @@ export default function CompanyInfoForm() {
                 })
               }
               error={formErrors.form_business_assignee}
+              fullWidth
+              label="業務擔當"
             >
-              <MenuItem value="陳柏元">陳柏元</MenuItem>
-              <MenuItem value="郭昭賢">郭昭賢</MenuItem>
-            </Select>
+              業務擔當
+            </TextField>
           </FormControl>
         </Grid>
         <Grid item xs={2}>
