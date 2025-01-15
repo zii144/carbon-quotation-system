@@ -34,7 +34,7 @@ export default function ForgotPassword({
         sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}
       >
         <DialogContentText>
-          請輸入您帳戶的電子郵件地址，我們將向您發送一個連結以重設您的密碼。
+          請輸入您的員工電子郵件地址，然後完成密碼重設程序。
         </DialogContentText>
         <OutlinedInput
           autoFocus
@@ -43,8 +43,40 @@ export default function ForgotPassword({
           id="email"
           name="email"
           label="Email address"
-          placeholder="電子郵件地址"
+          placeholder="員工電子郵件地址"
           type="email"
+          fullWidth
+        />
+        <OutlinedInput
+          autoFocus
+          required
+          margin="dense"
+          id="birthday"
+          name="birthday"
+          defaultValue={"1970-01-01"}
+          label="Birthday"
+          placeholder="出生年月日"
+          type="date"
+          fullWidth
+        />
+        <OutlinedInput
+          required
+          margin="dense"
+          id="new-password"
+          name="new-password"
+          label="New password"
+          placeholder="新密碼"
+          type="password"
+          fullWidth
+        />
+        <OutlinedInput
+          required
+          margin="dense"
+          id="confirm-password"
+          name="confirm-password"
+          label="Confirm password"
+          placeholder="確認新密碼"
+          type="password"
           fullWidth
         />
       </DialogContent>

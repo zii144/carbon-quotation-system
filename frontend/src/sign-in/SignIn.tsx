@@ -178,7 +178,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
           >
             <FormControl>
               <FormLabel htmlFor="email" sx={{ textAlign: "left" }}>
-                人員帳號
+                員工電子郵件地址
               </FormLabel>
               <TextField
                 error={emailError}
