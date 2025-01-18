@@ -66,6 +66,7 @@ export default function QuotationPage() {
   ];
 
   //* Role mapping */
+  //#region Role Mapping
   const roleMapping: Record<string, string> = {
     總經理: "GeneralManager",
     廠長: "FactoryDirector",
@@ -85,6 +86,7 @@ export default function QuotationPage() {
   const parseRoleToChinese = (role: string): string => {
     return reverseRoleMapping[role] || "未知身份";
   };
+  //#endregion
 
   const CurrentFormComponent = componentMap[currentTitle];
 
@@ -94,9 +96,38 @@ export default function QuotationPage() {
 
   const navigate = useNavigate();
 
+  //* Role Access */
+  //#region  Role Access
+  const roleAccess = {
+    GeneralManager: [
+      "員工基本資料",
+      "客戶基本資料",
+      "維護材質資料",
+      "委外廠商資料",
+      "中央圖號管理資料",
+      "填寫詢價單",
+      "填寫成本資料",
+      "已簽核成本資料",
+      "訂單簽核",
+      "登出",
+    ],
+    FactoryDirector: [
+      "員工基本資料",
+      "填寫成本資料",
+      "已簽核成本資料",
+      "訂單簽核",
+      "登出",
+    ],
+    FactoryPeer: ["填寫成本資料", "已簽核成本資料", "登出"],
+    Sales: ["填寫詢價單", "登出"],
+  };
+  //#endregion
+
   //* Show alert when user is  authenticated */
+  //#region Show alert when user is authenticated
   const { user } = useUser();
   const [alertShown, setAlertShown] = useState(false);
+  const filteredSidebarItems = roleAccess[user.role] || [];
 
   useEffect(() => {
     if (user.isAuthenticated && !alertShown) {
@@ -111,6 +142,7 @@ export default function QuotationPage() {
       setAlertShown(true);
     }
   }, [user.isAuthenticated, user.role, showAlert, navigate, alertShown]);
+  //#endregion
 
   const StyledBadge = styled(Badge)(({ theme }) => ({
     "& .MuiBadge-badge": {
@@ -158,7 +190,6 @@ export default function QuotationPage() {
               sx={{
                 p: 2,
                 mb: 2,
-                width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
               }}
             >
               <Grid container spacing={2} sx={{ p: 2 }}>
@@ -189,8 +220,6 @@ export default function QuotationPage() {
               elevation={3}
               sx={{
                 p: 2,
-                width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
-                height: `calc(${sidebarItems.length} * 48px + 80px)`,
                 position: "sticky",
                 top: "10px",
                 overflowY: "auto",
@@ -198,7 +227,7 @@ export default function QuotationPage() {
             >
               <Typography variant="h6">資料處理列表</Typography>
               <Stack spacing={2} sx={{ mt: 2 }}>
-                {sidebarItems.map((item) => (
+                {filteredSidebarItems.map((item: string) => (
                   <SidebarButton
                     key={item}
                     title={item}
