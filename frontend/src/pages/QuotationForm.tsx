@@ -1,4 +1,13 @@
-import { Box, Container, Grid, Paper, Typography, Fab } from "@mui/material";
+import {
+  Box,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+  Fab,
+  Alert,
+  Collapse,
+} from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -16,6 +25,9 @@ import ApprovedCostForm from "../components/forms/ApprovedCostForm";
 import OrderApprovalForm from "../components/forms/OrderApprovalForm";
 
 import { useState } from "react";
+import useAlert from "../hooks/userAlert";
+import { useEffect } from "react";
+import { useUser } from "../context/userContext";
 
 type ComponentMapType = {
   [key: string]: React.FC;
@@ -35,7 +47,6 @@ const componentMap: ComponentMapType = {
 
 export default function QuotationPage() {
   const [currentTitle, setCurrentTitle] = useState("員工基本資料");
-  const [showSidebar, setShowSidebar] = useState(true);
 
   const sidebarItems = [
     "員工基本資料",
@@ -50,6 +61,18 @@ export default function QuotationPage() {
   ];
 
   const CurrentFormComponent = componentMap[currentTitle];
+
+  const [showSidebar, setShowSidebar] = useState(true);
+
+  const { alert, showAlert } = useAlert();
+
+  /* Show alert when user is  authenticated */
+  const { user } = useUser();
+  useEffect(() => {
+    if (user.isAuthenticated) {
+      showAlert(`登入成功，身份為: ${user.role}`, "success");
+    }
+  }, [user.isAuthenticated, user.role, showAlert]);
 
   return (
     <Container maxWidth="lg" sx={{ ml: -5, mr: -5 }}>
@@ -135,6 +158,16 @@ export default function QuotationPage() {
       >
         {showSidebar ? <CloseIcon /> : <MenuIcon />}
       </Fab>
+
+      {/* Alert Component */}
+      <Collapse
+        in={alert.open}
+        sx={{ position: "fixed", top: "1rem", right: "1rem" }}
+      >
+        <Alert variant="filled" severity="success">
+          {alert.message}
+        </Alert>
+      </Collapse>
     </Container>
   );
 }

@@ -17,6 +17,7 @@ import ForgotPassword from "./ForgotPassword";
 import AppTheme from "../shared-theme/AppTheme";
 import ColorModeSelect from "../shared-theme/ColorModeSelect";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/userContext";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -80,6 +81,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     setOpen(false);
   };
 
+  const { setUser } = useUser();
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     if (emailError || passwordError) {
       event.preventDefault();
@@ -90,6 +93,27 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     const email = data.get("email");
     const password = data.get("password");
 
+    //!! REMOVE THIS LINE IN PRODUCTION
+    if (email === "admin@admin.com" && password === "adminadmin") {
+      const userData = {
+        role: "admin",
+        isAuthenticated: true,
+      };
+      setUser(userData);
+
+      navigate("/quotation");
+    } else if (email === "worker@worker.com" && password === "workerworker") {
+      const userData = {
+        role: "worker",
+        isAuthenticated: true,
+      };
+      setUser(userData);
+
+      navigate("/quotation");
+    }
+
+    // !! UNCOMMENT THIS BLOCK IN PRODUCTION
+    /*
     try {
       const response = await fetch("/api/login", {
         method: "POST",
@@ -104,7 +128,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     } catch (e) {
       console.error("Login error:", e);
       alert("登入失敗，請稍後再試");
-    }
+    }*/
   };
 
   const validateInputs = () => {
