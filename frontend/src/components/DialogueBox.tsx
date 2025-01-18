@@ -109,7 +109,7 @@ export default function QueryButton(props: QueryButtonProps) {
         fullWidth
         variant="outlined"
         onClick={handleClicked}
-        sx={{ height: "56px" }}
+        sx={{ height: "3rem" }}
       >
         查 詢
       </Button>

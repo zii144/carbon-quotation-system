@@ -12,6 +12,8 @@ import {
   Fade,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import AppTheme from "../shared-theme/AppTheme";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -180,119 +182,122 @@ export default function QuotationPage() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ ml: -5, mr: -5 }}>
-      <Grid container spacing={2}>
-        {/* Sidebar Section */}
-        {showSidebar && (
-          <Grid item xs={3}>
+    <AppTheme>
+      <CssBaseline enableColorScheme />
+      <Container maxWidth="lg" sx={{ ml: -5, mr: -5 }}>
+        <Grid container spacing={2}>
+          {/* Sidebar Section */}
+          {showSidebar && (
+            <Grid item xs={3}>
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 2,
+                  mb: 2,
+                }}
+              >
+                <Grid container spacing={2} sx={{ p: 2 }}>
+                  <StyledBadge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    variant="dot"
+                  >
+                    <Avatar alt="" />
+                  </StyledBadge>
+
+                  <Typography
+                    sx={{
+                      ml: 1.5,
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    身份群組：{parseRoleToChinese(user.role)}
+                  </Typography>
+                </Grid>
+                <Typography variant="h6">未/已取單數量</Typography>
+                <Typography variant="body1">未取單: 0</Typography>
+                <Typography variant="body1">已取單: 0</Typography>
+              </Paper>
+
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 2,
+                  position: "sticky",
+                  top: "10px",
+                  overflowY: "auto",
+                }}
+              >
+                <Typography variant="h6">資料處理列表</Typography>
+                <Stack spacing={2} sx={{ mt: 2 }}>
+                  {filteredSidebarItems.map((item: string) => (
+                    <SidebarButton
+                      key={item}
+                      title={item}
+                      currentTitle={currentTitle}
+                      SetCurrentTitle={setCurrentTitle}
+                      onLogout={item === "登出" ? handleLogout : undefined} // Pass onLogout only for '登出'
+                    />
+                  ))}
+                </Stack>
+              </Paper>
+            </Grid>
+          )}
+
+          {/* Main Content Section */}
+          <Grid item xs={showSidebar ? 9 : 12}>
             <Paper
               elevation={3}
               sx={{
-                p: 2,
-                mb: 2,
-              }}
-            >
-              <Grid container spacing={2} sx={{ p: 2 }}>
-                <StyledBadge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  variant="dot"
-                >
-                  <Avatar alt="" />
-                </StyledBadge>
-
-                <Typography
-                  sx={{
-                    ml: 1.5,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  身份群組：{parseRoleToChinese(user.role)}
-                </Typography>
-              </Grid>
-              <Typography variant="h6">未/已取單數量</Typography>
-              <Typography variant="body1">未取單: 0</Typography>
-              <Typography variant="body1">已取單: 0</Typography>
-            </Paper>
-
-            <Paper
-              elevation={3}
-              sx={{
-                p: 2,
+                p: 3,
+                width: {
+                  xs: "60vw",
+                  sm: "68vw",
+                  md: "70vw",
+                  lg: showSidebar ? "76vw" : "93vw",
+                },
+                height: { xs: "70vh", sm: "75vh", md: "80vh", lg: "85vh" },
                 position: "sticky",
                 top: "10px",
                 overflowY: "auto",
               }}
             >
-              <Typography variant="h6">資料處理列表</Typography>
-              <Stack spacing={2} sx={{ mt: 2 }}>
-                {filteredSidebarItems.map((item: string) => (
-                  <SidebarButton
-                    key={item}
-                    title={item}
-                    currentTitle={currentTitle}
-                    SetCurrentTitle={setCurrentTitle}
-                    onLogout={item === "登出" ? handleLogout : undefined} // Pass onLogout only for '登出'
-                  />
-                ))}
-              </Stack>
+              <Typography variant="h5" gutterBottom>
+                {currentTitle}
+              </Typography>
+              <Box sx={{ p: 0, overflowY: "auto" }}>
+                {CurrentFormComponent && <CurrentFormComponent />}
+              </Box>
             </Paper>
           </Grid>
-        )}
-
-        {/* Main Content Section */}
-        <Grid item xs={showSidebar ? 9 : 12}>
-          <Paper
-            elevation={3}
-            sx={{
-              p: 3,
-              width: {
-                xs: "60vw",
-                sm: "68vw",
-                md: "70vw",
-                lg: showSidebar ? "76vw" : "93vw",
-              },
-              height: { xs: "70vh", sm: "75vh", md: "80vh", lg: "85vh" },
-              position: "sticky",
-              top: "10px",
-              overflowY: "auto",
-            }}
-          >
-            <Typography variant="h5" gutterBottom>
-              {currentTitle}
-            </Typography>
-            <Box sx={{ p: 0, overflowY: "auto" }}>
-              {CurrentFormComponent && <CurrentFormComponent />}
-            </Box>
-          </Paper>
         </Grid>
-      </Grid>
 
-      {/* Floating Action Button */}
-      <Fab
-        color="primary"
-        aria-label={showSidebar ? "Hide Sidebar" : "Show Sidebar"}
-        sx={{
-          position: "fixed",
-          bottom: "40px",
-          left: "30px",
-        }}
-        onClick={() => setShowSidebar(!showSidebar)}
-      >
-        {showSidebar ? <CloseIcon /> : <MenuIcon />}
-      </Fab>
-
-      {/* Alert Component */}
-      <Fade in={alert.open} timeout={500}>
-        <Alert
-          variant="filled"
-          severity="success"
-          sx={{ position: "fixed", top: "1rem", right: "1rem" }}
+        {/* Floating Action Button */}
+        <Fab
+          variant="extended"
+          aria-label={showSidebar ? "Hide Sidebar" : "Show Sidebar"}
+          sx={{
+            position: "fixed",
+            bottom: "40px",
+            left: "30px",
+          }}
+          onClick={() => setShowSidebar(!showSidebar)}
         >
-          {alert.message}
-        </Alert>
-      </Fade>
-    </Container>
+          {showSidebar ? <CloseIcon /> : <MenuIcon />}
+        </Fab>
+
+        {/* Alert Component */}
+        <Fade in={alert.open} timeout={500}>
+          <Alert
+            variant="filled"
+            severity="success"
+            sx={{ position: "fixed", top: "1rem", right: "1rem" }}
+          >
+            {alert.message}
+          </Alert>
+        </Fade>
+      </Container>
+    </AppTheme>
   );
 }
