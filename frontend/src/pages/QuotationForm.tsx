@@ -7,7 +7,11 @@ import {
   Fab,
   Alert,
   Collapse,
+  Badge,
+  Avatar,
+  Stack,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -24,10 +28,10 @@ import CostEntryForm from "../components/forms/CostEntryForm";
 import ApprovedCostForm from "../components/forms/ApprovedCostForm";
 import OrderApprovalForm from "../components/forms/OrderApprovalForm";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useAlert from "../hooks/userAlert";
-import { useEffect } from "react";
-import { useUser } from "../context/userContext";
+import { useUser } from "../hooks/useUser";
+import { useNavigate } from "react-router-dom";
 
 type ComponentMapType = {
   [key: string]: React.FC;
@@ -58,7 +62,29 @@ export default function QuotationPage() {
     "填寫成本資料",
     "已簽核成本資料",
     "訂單簽核",
+    "登出",
   ];
+
+  //* Role mapping */
+  const roleMapping: Record<string, string> = {
+    總經理: "GeneralManager",
+    廠長: "FactoryDirector",
+    廠務: "FactoryPeer",
+    業務: "Sales",
+  };
+
+  // Dynamically create the reverse mapping
+  const reverseRoleMapping = Object.fromEntries(
+    Object.entries(roleMapping).map(([key, value]) => [value, key])
+  );
+
+  const parseRoleToEnglish = (role: string): string => {
+    return roleMapping[role] || "UnknownRole";
+  };
+
+  const parseRoleToChinese = (role: string): string => {
+    return reverseRoleMapping[role] || "未知身份";
+  };
 
   const CurrentFormComponent = componentMap[currentTitle];
 
@@ -66,13 +92,60 @@ export default function QuotationPage() {
 
   const { alert, showAlert } = useAlert();
 
-  /* Show alert when user is  authenticated */
+  const navigate = useNavigate();
+
+  //* Show alert when user is  authenticated */
   const { user } = useUser();
+  const [alertShown, setAlertShown] = useState(false);
+
   useEffect(() => {
-    if (user.isAuthenticated) {
-      showAlert(`登入成功，身份為: ${user.role}`, "success");
+    if (user.isAuthenticated && !alertShown) {
+      showAlert(
+        `登入成功，身份為: ${parseRoleToChinese(user.role)}`,
+        "success"
+      );
+      setAlertShown(true);
+    } else if (!user.isAuthenticated && !alertShown) {
+      showAlert("登入失敗，請檢查帳號或密碼", "error");
+      navigate("/");
+      setAlertShown(true);
     }
-  }, [user.isAuthenticated, user.role, showAlert]);
+  }, [user.isAuthenticated, user.role, showAlert, navigate, alertShown]);
+
+  const StyledBadge = styled(Badge)(({ theme }) => ({
+    "& .MuiBadge-badge": {
+      backgroundColor: "#44b700",
+      color: "#44b700",
+      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+      "&::after": {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        borderRadius: "50%",
+        animation: "ripple 1.2s infinite ease-in-out",
+        border: "1px solid currentColor",
+        content: '""',
+      },
+    },
+    "@keyframes ripple": {
+      "0%": {
+        transform: "scale(.8)",
+        opacity: 1,
+      },
+      "100%": {
+        transform: "scale(2.4)",
+        opacity: 0,
+      },
+    },
+  }));
+
+  const { setUser } = useUser();
+  const handleLogout = () => {
+    setUser({ role: "", isAuthenticated: false }); // Clear user state
+    console.log("User logged out"); // Any additional logout logic
+  };
 
   return (
     <Container maxWidth="lg" sx={{ ml: -5, mr: -5 }}>
@@ -88,6 +161,25 @@ export default function QuotationPage() {
                 width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
               }}
             >
+              <Grid container spacing={2} sx={{ p: 2 }}>
+                <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  variant="dot"
+                >
+                  <Avatar alt="" />
+                </StyledBadge>
+
+                <Typography
+                  sx={{
+                    ml: 1.5,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  身份群組： {parseRoleToChinese(user.role)}
+                </Typography>
+              </Grid>
               <Typography variant="h6">未/已取單數量</Typography>
               <Typography variant="body1">未取單: 0</Typography>
               <Typography variant="body1">已取單: 0</Typography>
@@ -98,21 +190,24 @@ export default function QuotationPage() {
               sx={{
                 p: 2,
                 width: { xs: "60vw", sm: "65vw", md: "18.5vw", lg: "14.5vw" },
-                height: { xs: "70vh", sm: "75vh", md: "65vh", lg: "52vh" },
+                height: `calc(${sidebarItems.length} * 48px + 80px)`,
                 position: "sticky",
                 top: "10px",
                 overflowY: "auto",
               }}
             >
               <Typography variant="h6">資料處理列表</Typography>
-              {sidebarItems.map((item) => (
-                <SidebarButton
-                  key={item}
-                  title={item}
-                  currentTitle={currentTitle}
-                  SetCurrentTitle={setCurrentTitle}
-                />
-              ))}
+              <Stack spacing={2} sx={{ mt: 2 }}>
+                {sidebarItems.map((item) => (
+                  <SidebarButton
+                    key={item}
+                    title={item}
+                    currentTitle={currentTitle}
+                    SetCurrentTitle={setCurrentTitle}
+                    onLogout={item === "登出" ? handleLogout : undefined} // Pass onLogout only for '登出'
+                  />
+                ))}
+              </Stack>
             </Paper>
           </Grid>
         )}

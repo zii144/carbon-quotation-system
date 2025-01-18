@@ -17,7 +17,7 @@ import ForgotPassword from "./ForgotPassword";
 import AppTheme from "../shared-theme/AppTheme";
 import ColorModeSelect from "../shared-theme/ColorModeSelect";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/userContext";
+import { useUser } from "../hooks/useUser";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -94,17 +94,33 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     const password = data.get("password");
 
     //!! REMOVE THIS LINE IN PRODUCTION
-    if (email === "admin@admin.com" && password === "adminadmin") {
+    if (email === "gm@zii.com" && password === "ziiwong") {
       const userData = {
-        role: "admin",
+        role: "GeneralManager",
         isAuthenticated: true,
       };
       setUser(userData);
 
       navigate("/quotation");
-    } else if (email === "worker@worker.com" && password === "workerworker") {
+    } else if (email === "fd@zii.com" && password === "ziiwong") {
       const userData = {
-        role: "worker",
+        role: "FactoryDirector",
+        isAuthenticated: true,
+      };
+      setUser(userData);
+
+      navigate("/quotation");
+    } else if (email === "fp@zii.com" && password === "ziiwong") {
+      const userData = {
+        role: "FactoryPeer",
+        isAuthenticated: true,
+      };
+      setUser(userData);
+
+      navigate("/quotation");
+    } else if (email === "s@zii.com" && password === "ziiwong") {
+      const userData = {
+        role: "Sales",
         isAuthenticated: true,
       };
       setUser(userData);
