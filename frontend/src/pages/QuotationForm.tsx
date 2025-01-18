@@ -6,10 +6,10 @@ import {
   Typography,
   Fab,
   Alert,
-  Collapse,
   Badge,
   Avatar,
   Stack,
+  Fade,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -118,7 +118,7 @@ export default function QuotationPage() {
       color: "#44b700",
       boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
       "&::after": {
-        position: "absolute",
+        position: "relative",
         top: 0,
         left: 0,
         width: "100%",
@@ -177,7 +177,7 @@ export default function QuotationPage() {
                     alignItems: "center",
                   }}
                 >
-                  身份群組： {parseRoleToChinese(user.role)}
+                  身份群組：{parseRoleToChinese(user.role)}
                 </Typography>
               </Grid>
               <Typography variant="h6">未/已取單數量</Typography>
@@ -255,14 +255,15 @@ export default function QuotationPage() {
       </Fab>
 
       {/* Alert Component */}
-      <Collapse
-        in={alert.open}
-        sx={{ position: "fixed", top: "1rem", right: "1rem" }}
-      >
-        <Alert variant="filled" severity="success">
+      <Fade in={alert.open} timeout={500}>
+        <Alert
+          variant="filled"
+          severity="success"
+          sx={{ position: "fixed", top: "1rem", right: "1rem" }}
+        >
           {alert.message}
         </Alert>
-      </Collapse>
+      </Fade>
     </Container>
   );
 }
