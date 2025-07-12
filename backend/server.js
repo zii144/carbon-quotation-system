@@ -714,6 +714,159 @@ app.post("/api/login", (req, res) => {
 });
 //#endregion
 
+//* CRUD APIs For InquiryForm
+//#region InquiryForm
+// API to fetch inquiry data
+app.get("/api/inquiries", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const sql = "SELECT * FROM InquiryForm ORDER BY created_at DESC";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log("Error fetching inquiries:", err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// API to add inquiry data
+app.post("/api/inquiries", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const {
+    inquiry_number,
+    business_category,
+    customer_name,
+    contact_person,
+    material_number,
+    drawing_number,
+    inquiry_quantity,
+    industry_type,
+    customer_purpose,
+    product_size,
+    material,
+    note,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO InquiryForm (
+      inquiry_number, business_category, customer_name, contact_person,
+      material_number, drawing_number, inquiry_quantity, industry_type,
+      customer_purpose, product_size, material, note
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    sql,
+    [
+      inquiry_number,
+      business_category,
+      customer_name,
+      contact_person,
+      material_number,
+      drawing_number,
+      inquiry_quantity,
+      industry_type,
+      customer_purpose,
+      product_size,
+      material,
+      note,
+    ],
+    (err) => {
+      if (err) {
+        console.log("Error adding inquiry:", err.message);
+        return res.status(500).send(`Error adding inquiry: ${err.message}`);
+      }
+      res.send("Inquiry added successfully");
+    }
+  );
+});
+
+// API to update inquiry data
+app.put("/api/inquiries/:inquiry_number", (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const {
+    business_category,
+    customer_name,
+    contact_person,
+    material_number,
+    drawing_number,
+    inquiry_quantity,
+    industry_type,
+    customer_purpose,
+    product_size,
+    material,
+    note,
+  } = req.body;
+
+  const sql = `
+    UPDATE InquiryForm
+    SET
+      business_category = ?,
+      customer_name = ?,
+      contact_person = ?,
+      material_number = ?,
+      drawing_number = ?,
+      inquiry_quantity = ?,
+      industry_type = ?,
+      customer_purpose = ?,
+      product_size = ?,
+      material = ?,
+      note = ?,
+      updated_at = CURRENT_TIMESTAMP
+    WHERE inquiry_number = ?
+  `;
+
+  db.query(
+    sql,
+    [
+      business_category,
+      customer_name,
+      contact_person,
+      material_number,
+      drawing_number,
+      inquiry_quantity,
+      industry_type,
+      customer_purpose,
+      product_size,
+      material,
+      note,
+      req.params.inquiry_number,
+    ],
+    (err) => {
+      if (err) {
+        console.error("Error updating inquiry:", err.message);
+        return res.status(500).send(`Error updating inquiry: ${err.message}`);
+      }
+      res.send("Inquiry updated successfully");
+    }
+  );
+});
+
+// API to delete inquiry data
+app.delete("/api/inquiries/:inquiry_number", async (req, res) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  const { inquiry_number } = req.params;
+
+  // Validate that `inquiry_number` is not empty
+  if (!inquiry_number || typeof inquiry_number !== "string") {
+    return res.status(400).json({ error: "Invalid inquiry number format" });
+  }
+
+  const sql = "DELETE FROM InquiryForm WHERE inquiry_number = ?";
+  try {
+    const [result] = await db.promise().query(sql, [inquiry_number]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Inquiry not found" });
+    }
+    res.status(200).json({ message: "Inquiry deleted successfully" });
+  } catch (err) {
+    console.error("Database Error: ", err);
+    res.status(500).json({ error: "An internal error occurred." });
+  }
+});
+//#endregion
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

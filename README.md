@@ -38,11 +38,41 @@ A comprehensive system for generating carbon emission quotations for businesses 
    npm install
    ```
 3. Configure environment variables (see [Configuration](#configuration)).
+4. Set up and run the application:
 
-4. Start the application:
-   ```bash
-   npm start
-   ```
+### Option 1: Run with Docker (Recommended)
+
+If you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed, you can run the entire stack (database, backend, and frontend) with a single command:
+
+```bash
+docker-compose up --build
+```
+
+This will start all required services as defined in `docker-compose.yml`. The frontend will be available at `http://localhost:3000` (or the port specified in your `.env`), and the backend/API will be accessible as configured.
+
+### Option 2: Run Each Service Manually
+
+#### 1. Start the Database
+
+Ensure your database (e.g., PostgreSQL, MySQL) is running and accessible as configured in your `.env` file.
+
+#### 2. Start the Backend
+
+```bash
+cd backend
+npm install
+npm run start
+```
+
+#### 3. Start the Frontend
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+The frontend will typically be available at `http://localhost:3000` by default.
 
 ## Usage
 

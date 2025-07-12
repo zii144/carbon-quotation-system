@@ -170,3 +170,22 @@ CREATE TABLE
         user_email VARCHAR(50) NOT NULL, -- 使用者名稱
         user_password VARCHAR(100) NOT NULL -- 密碼
     )
+
+-- Create a new InquiryForm table with updated schema
+CREATE TABLE IF NOT EXISTS InquiryForm (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inquiry_number VARCHAR(20) NOT NULL UNIQUE,
+    business_category VARCHAR(50) NOT NULL,
+    customer_name VARCHAR(100) NOT NULL,
+    contact_person VARCHAR(100) NOT NULL,
+    material_number VARCHAR(50) NOT NULL,
+    drawing_number VARCHAR(50) NOT NULL,
+    inquiry_quantity INT NOT NULL,
+    industry_type VARCHAR(50) NOT NULL,
+    customer_purpose VARCHAR(200) NOT NULL,
+    product_size VARCHAR(100) NOT NULL,
+    material VARCHAR(50) NOT NULL,
+    note BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);"
