@@ -41,8 +41,18 @@ interface InquiryData {
 }
 
 export default function InquiryForm() {
+  // Generate a random inquiry number, e.g., "2024" + MMDD + 4 random digits
+  function generateInquiryNumber() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    return `${year}${month}${day}${randomDigits}`;
+  }
+
   const [formData, setFormData] = useState({
-    inquiryNumber: "202412220001",
+    inquiryNumber: generateInquiryNumber(),
     businessCategory: "",
     customerName: "",
     contactPerson: "",

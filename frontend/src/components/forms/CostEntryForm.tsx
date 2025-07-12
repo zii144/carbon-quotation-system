@@ -64,38 +64,19 @@ interface CostEntry {
   updated_at?: string;
 }
 
-type FormValues = {
-  form_exchange_rate?: number;
-  form_tariff?: number;
-  form_shipping_cost?: number;
-  form_material_cost?: number;
-  form_blade_cost?: number;
-  form_mold_cost?: number;
-  form_other_cost?: number;
-  form_total_cost?: number;
-  form_processing_cost?: number;
-  form_outsourcing_cost?: number;
-  form_processing_and_outsourcing_total?: number;
-  form_total_final_cost?: number;
-  // Other fields not involved in calculations can still allow string | number | undefined
-  form_inquiry_number?: string;
-  form_production_type?: string;
-};
-
 export default function CostEntryForm() {
   const [costEntryData, setcostEntryData] = useState<CostEntry[]>([]);
 
   useEffect(() => {
     fetchCostEntriesData();
     const inquiry_number = generateUniqueInquiryNumber(6);
-    setFormValues({
-      ...formValues,
+    setFormValues((prev) => ({
+      ...prev,
       form_inquiry_number: inquiry_number.toString(),
-
       form_total_cost: 0,
       form_processing_and_outsourcing_total: 0,
       form_total_final_cost: 0,
-    });
+    }));
   }, []);
 
   //?? Form Values
@@ -290,34 +271,40 @@ export default function CostEntryForm() {
       inquiry_number: parseInt(formValues.form_inquiry_number),
       production_type: formValues.form_production_type,
       material: formValues.form_material,
-      product_dimensions: parseInt(
+      product_dimensions: parseFloat(
         formValues.form_product_dimensions?.toString() ?? "0"
       ),
-      exchange_rate: parseInt(formValues.form_exchange_rate?.toString() ?? "0"),
-      tariff: parseInt(formValues.form_tariff?.toString() ?? "0"),
-      shipping_cost: parseInt(formValues.form_shipping_cost?.toString() ?? "0"),
-      material_cost: parseInt(formValues.form_material_cost?.toString() ?? "0"),
-      blade_cost: parseInt(formValues.form_blade_cost?.toString() ?? "0"),
+      exchange_rate: parseFloat(
+        formValues.form_exchange_rate?.toString() ?? "0"
+      ),
+      tariff: parseFloat(formValues.form_tariff?.toString() ?? "0"),
+      shipping_cost: parseFloat(
+        formValues.form_shipping_cost?.toString() ?? "0"
+      ),
+      material_cost: parseFloat(
+        formValues.form_material_cost?.toString() ?? "0"
+      ),
+      blade_cost: parseFloat(formValues.form_blade_cost?.toString() ?? "0"),
       blade_cost_notes: formValues.form_blade_cost_notes,
-      mold_cost: parseInt(formValues.form_mold_cost?.toString() ?? "0"),
+      mold_cost: parseFloat(formValues.form_mold_cost?.toString() ?? "0"),
       mold_cost_notes: formValues.form_mold_cost_notes,
-      other_cost: parseInt(formValues.form_other_cost?.toString() ?? "0"),
+      other_cost: parseFloat(formValues.form_other_cost?.toString() ?? "0"),
       other_cost_notes: formValues.form_other_cost_notes,
-      total_cost: parseInt(formValues.form_total_cost?.toString() ?? "0"),
-      total_processing_time: parseInt(
+      total_cost: parseFloat(formValues.form_total_cost?.toString() ?? "0"),
+      total_processing_time: parseFloat(
         formValues.form_total_processing_time?.toString() ?? "0"
       ),
-      processing_cost: parseInt(
+      processing_cost: parseFloat(
         formValues.form_processing_cost?.toString() ?? "0"
       ),
       outsourcing_company: formValues.form_outsourcing_company,
-      outsourcing_cost: parseInt(
+      outsourcing_cost: parseFloat(
         formValues.form_outsourcing_cost?.toString() ?? "0"
       ),
-      processing_and_outsourcing_total: parseInt(
+      processing_and_outsourcing_total: parseFloat(
         formValues.form_processing_and_outsourcing_total?.toString() ?? "0"
       ),
-      total_final_cost: parseInt(
+      total_final_cost: parseFloat(
         formValues.form_total_final_cost?.toString() ?? "0"
       ),
       content_notes: formValues.form_content_notes,
@@ -340,46 +327,81 @@ export default function CostEntryForm() {
     };
 
     const newFormErrors = {
-      // -- -- 基本資料
-      form_inquiry_number: !newCostEntry.inquiry_number,
-      form_production_type: !newCostEntry.production_type,
-      form_material: !newCostEntry.material,
-      form_product_dimensions: !newCostEntry.product_dimensions,
-      form_exchange_rate: !newCostEntry.exchange_rate,
-      form_tariff: !newCostEntry.tariff,
-      form_shipping_cost: !newCostEntry.shipping_cost,
-      form_material_cost: !newCostEntry.material_cost,
-      form_blade_cost: !newCostEntry.blade_cost,
-      form_blade_cost_notes: !newCostEntry.blade_cost_notes,
-      form_mold_cost: !newCostEntry.mold_cost,
-      form_mold_cost_notes: !newCostEntry.mold_cost_notes,
-      form_other_cost: !newCostEntry.other_cost,
-      form_other_cost_notes: !newCostEntry.other_cost_notes,
-      form_total_cost: !newCostEntry.total_cost,
-      form_total_processing_time: !newCostEntry.total_processing_time,
-      form_processing_cost: !newCostEntry.processing_cost,
-      form_outsourcing_company: !newCostEntry.outsourcing_company,
-      form_outsourcing_cost: !newCostEntry.outsourcing_cost,
+      // -- -- 基本資料 (Only validate required string/number fields)
+      form_inquiry_number:
+        !newCostEntry.inquiry_number || isNaN(newCostEntry.inquiry_number),
+      form_production_type:
+        !newCostEntry.production_type ||
+        newCostEntry.production_type.trim() === "",
+      form_material:
+        !newCostEntry.material || newCostEntry.material.trim() === "",
+      form_product_dimensions:
+        newCostEntry.product_dimensions === undefined ||
+        isNaN(newCostEntry.product_dimensions),
+      form_exchange_rate:
+        newCostEntry.exchange_rate === undefined ||
+        isNaN(newCostEntry.exchange_rate),
+      form_tariff:
+        newCostEntry.tariff === undefined || isNaN(newCostEntry.tariff),
+      form_shipping_cost:
+        newCostEntry.shipping_cost === undefined ||
+        isNaN(newCostEntry.shipping_cost),
+      form_material_cost:
+        newCostEntry.material_cost === undefined ||
+        isNaN(newCostEntry.material_cost),
+      form_blade_cost:
+        newCostEntry.blade_cost === undefined || isNaN(newCostEntry.blade_cost),
+      form_blade_cost_notes:
+        !newCostEntry.blade_cost_notes ||
+        newCostEntry.blade_cost_notes.trim() === "",
+      form_mold_cost:
+        newCostEntry.mold_cost === undefined || isNaN(newCostEntry.mold_cost),
+      form_mold_cost_notes:
+        !newCostEntry.mold_cost_notes ||
+        newCostEntry.mold_cost_notes.trim() === "",
+      form_other_cost:
+        newCostEntry.other_cost === undefined || isNaN(newCostEntry.other_cost),
+      form_other_cost_notes:
+        !newCostEntry.other_cost_notes ||
+        newCostEntry.other_cost_notes.trim() === "",
+      form_total_cost:
+        newCostEntry.total_cost === undefined || isNaN(newCostEntry.total_cost),
+      form_total_processing_time:
+        newCostEntry.total_processing_time === undefined ||
+        isNaN(newCostEntry.total_processing_time),
+      form_processing_cost:
+        newCostEntry.processing_cost === undefined ||
+        isNaN(newCostEntry.processing_cost),
+      form_outsourcing_company:
+        !newCostEntry.outsourcing_company ||
+        newCostEntry.outsourcing_company.trim() === "",
+      form_outsourcing_cost:
+        newCostEntry.outsourcing_cost === undefined ||
+        isNaN(newCostEntry.outsourcing_cost),
       form_processing_and_outsourcing_total:
-        !newCostEntry.processing_and_outsourcing_total,
-      form_total_final_cost: !newCostEntry.total_final_cost,
-      form_content_notes: !newCostEntry.content_notes,
+        newCostEntry.processing_and_outsourcing_total === undefined ||
+        isNaN(newCostEntry.processing_and_outsourcing_total),
+      form_total_final_cost:
+        newCostEntry.total_final_cost === undefined ||
+        isNaN(newCostEntry.total_final_cost),
+      form_content_notes:
+        !newCostEntry.content_notes || newCostEntry.content_notes.trim() === "",
 
-      // -- -- 簽核 as BOOLEAN columns
-      form_factory_signature: !newCostEntry.factory_signature,
-      form_factory_deputy_signature: !newCostEntry.factory_deputy_signature,
-      form_manager_signature: !newCostEntry.manager_signature,
-      form_manager_approval_signature: !newCostEntry.manager_approval_signature,
+      // -- -- 簽核 as BOOLEAN columns (Don't validate boolean fields - they default to false which is valid)
+      form_factory_signature: false, // Always valid for booleans
+      form_factory_deputy_signature: false,
+      form_manager_signature: false,
+      form_manager_approval_signature: false,
 
-      // -- -- 加工內容
-      form_lathe: !newCostEntry.lathe,
-      form_milling_machine: !newCostEntry.milling_machine,
-      form_cnc: !newCostEntry.cnc,
-      form_manual: !newCostEntry.manual,
-      form_saw: !newCostEntry.saw,
-      form_backup_field1: !newCostEntry.backup_field1,
-      form_backup_field2: !newCostEntry.backup_field2,
-      form_backup_field3: !newCostEntry.backup_field3,
+      // -- -- 加工內容 (Don't validate boolean fields - they default to false which is valid)
+      form_lathe: false, // Always valid for booleans
+      form_milling_machine: false,
+      form_cnc: false,
+      form_manual: false,
+      form_saw: false,
+      form_backup_field1: false,
+      form_backup_field2: false,
+      form_backup_field3: false,
     };
 
     console.log("New Cost Entry: ", newCostEntry);
@@ -424,34 +446,40 @@ export default function CostEntryForm() {
       inquiry_number: parseInt(formValues.form_inquiry_number),
       production_type: formValues.form_production_type,
       material: formValues.form_material,
-      product_dimensions: parseInt(
+      product_dimensions: parseFloat(
         formValues.form_product_dimensions?.toString() ?? "0"
       ),
-      exchange_rate: parseInt(formValues.form_exchange_rate?.toString() ?? "0"),
-      tariff: parseInt(formValues.form_tariff?.toString() ?? "0"),
-      shipping_cost: parseInt(formValues.form_shipping_cost?.toString() ?? "0"),
-      material_cost: parseInt(formValues.form_material_cost?.toString() ?? "0"),
-      blade_cost: parseInt(formValues.form_blade_cost?.toString() ?? "0"),
+      exchange_rate: parseFloat(
+        formValues.form_exchange_rate?.toString() ?? "0"
+      ),
+      tariff: parseFloat(formValues.form_tariff?.toString() ?? "0"),
+      shipping_cost: parseFloat(
+        formValues.form_shipping_cost?.toString() ?? "0"
+      ),
+      material_cost: parseFloat(
+        formValues.form_material_cost?.toString() ?? "0"
+      ),
+      blade_cost: parseFloat(formValues.form_blade_cost?.toString() ?? "0"),
       blade_cost_notes: formValues.form_blade_cost_notes,
-      mold_cost: parseInt(formValues.form_mold_cost?.toString() ?? "0"),
+      mold_cost: parseFloat(formValues.form_mold_cost?.toString() ?? "0"),
       mold_cost_notes: formValues.form_mold_cost_notes,
-      other_cost: parseInt(formValues.form_other_cost?.toString() ?? "0"),
+      other_cost: parseFloat(formValues.form_other_cost?.toString() ?? "0"),
       other_cost_notes: formValues.form_other_cost_notes,
-      total_cost: parseInt(formValues.form_total_cost?.toString() ?? "0"),
-      total_processing_time: parseInt(
+      total_cost: parseFloat(formValues.form_total_cost?.toString() ?? "0"),
+      total_processing_time: parseFloat(
         formValues.form_total_processing_time?.toString() ?? "0"
       ),
-      processing_cost: parseInt(
+      processing_cost: parseFloat(
         formValues.form_processing_cost?.toString() ?? "0"
       ),
       outsourcing_company: formValues.form_outsourcing_company,
-      outsourcing_cost: parseInt(
+      outsourcing_cost: parseFloat(
         formValues.form_outsourcing_cost?.toString() ?? "0"
       ),
-      processing_and_outsourcing_total: parseInt(
+      processing_and_outsourcing_total: parseFloat(
         formValues.form_processing_and_outsourcing_total?.toString() ?? "0"
       ),
-      total_final_cost: parseInt(
+      total_final_cost: parseFloat(
         formValues.form_total_final_cost?.toString() ?? "0"
       ),
       content_notes: formValues.form_content_notes,
@@ -541,12 +569,38 @@ export default function CostEntryForm() {
     disabled?: boolean;
   }
 
+  //?? Row Selection Handlers
+  //#region Row Selection Handlers
+  const [selectedRow, setSelectedRow] = useState<number>(); // For row selection
+
+  // Move button configs after selectedRow declaration
   const buttonConfigs: ButtonConfig[] = [
     {
-      text: "預覽送出",
+      text: "新增",
       variant: "contained",
       color: "primary",
       onClick: handleAddCostEntry,
+      disabled: !!selectedRow, // Disable when a row is selected
+    },
+    {
+      text: "修改",
+      variant: "contained",
+      color: "warning",
+      onClick: handleUpdateCostEntry,
+      disabled: !selectedRow, // Enable only when a row is selected
+    },
+    {
+      text: "刪除",
+      variant: "contained",
+      color: "error",
+      onClick: handleDeleteCostEntry,
+      disabled: !selectedRow, // Enable only when a row is selected
+    },
+    {
+      text: "清除",
+      variant: "outlined",
+      color: "secondary",
+      onClick: handleClearFields,
     },
   ];
 
@@ -564,6 +618,7 @@ export default function CostEntryForm() {
             sx={{
               px: 4,
               py: 1,
+              mx: 0.5,
             }}
           >
             {config.text}
@@ -573,29 +628,6 @@ export default function CostEntryForm() {
     );
   };
   //#endregion Button Handlers
-
-  //?? Row Selection Handlers
-  //#region Row Selection Handlers
-  const [selectedRow, setSelectedRow] = useState<number>(); // For row selection
-
-  const handleRowClick = (costEntry: CostEntry) => {
-    const isRowSelected = selectedRow === costEntry.inquiry_number;
-
-    if (!isRowSelected) {
-      // Select and fill form only if the row isn't already selected
-      setSelectedRow(costEntry.inquiry_number);
-      scrollToTop();
-      handleRowSelectedData(costEntry);
-      alert(
-        `選擇詢價單號: ${costEntry.inquiry_number}，請在輸入欄位中更改資料，然後點擊「修改」，以套用更動`
-      );
-    } else {
-      // Deselect row
-      setSelectedRow(undefined);
-      // Clear form fields on deselect
-      handleClearFields();
-    }
-  };
 
   const handleRowSelectedData = (costEntry: CostEntry) => {
     setFormValues({
@@ -660,15 +692,10 @@ export default function CostEntryForm() {
   };
 
   //?? Calculate sum
-  const calculateSum = (
-    fields: string[], // Accept string field names to maintain compatibility
-    resultField: string,
-    formValues: any, // Use `any` or your existing hook type
-    setFormValues: React.Dispatch<React.SetStateAction<any>>
-  ): void => {
+  const calculateSum = (fields: string[], resultField: string): void => {
     // Validate fields for missing or invalid data
     const hasIncompleteData = fields.some((field) => {
-      const value = formValues[field];
+      const value = (formValues as Record<string, unknown>)[field];
       return value === undefined || value === "" || isNaN(Number(value)); // Check for invalid data
     });
 
@@ -679,32 +706,29 @@ export default function CostEntryForm() {
 
     // Calculate the sum of valid fields
     const total = fields.reduce((sum, field) => {
-      const value = parseFloat(formValues[field]);
+      const value = parseFloat(
+        String((formValues as Record<string, unknown>)[field])
+      );
       return sum + (isNaN(value) ? 0 : value); // Safely parse and sum numbers
     }, 0);
 
     // Update the result field
-    setFormValues((prev: any) => ({
+    setFormValues((prev) => ({
       ...prev,
       [resultField]: total,
     }));
   };
 
-  const calculateFinalCost = (
-    formValues: any,
-    setFormValues: React.Dispatch<React.SetStateAction<any>>
-  ): void => {
+  const calculateFinalCost = (): void => {
     const { form_total_cost, form_processing_and_outsourcing_total } =
       formValues;
 
     // Validate required totals
     if (
       form_total_cost === undefined ||
-      form_total_cost === "" ||
       isNaN(Number(form_total_cost)) ||
       form_total_cost === 0 ||
       form_processing_and_outsourcing_total === undefined ||
-      form_processing_and_outsourcing_total === "" ||
       isNaN(Number(form_processing_and_outsourcing_total)) ||
       form_processing_and_outsourcing_total === 0
     ) {
@@ -714,11 +738,10 @@ export default function CostEntryForm() {
 
     // Calculate the final total
     const finalCost =
-      parseFloat(form_total_cost) +
-      parseFloat(form_processing_and_outsourcing_total);
+      Number(form_total_cost) + Number(form_processing_and_outsourcing_total);
 
     // Update the final cost field
-    setFormValues((prev: any) => ({
+    setFormValues((prev) => ({
       ...prev,
       form_total_final_cost: finalCost,
     }));
@@ -1118,9 +1141,7 @@ export default function CostEntryForm() {
                   "form_mold_cost",
                   "form_other_cost",
                 ],
-                "form_total_cost",
-                formValues,
-                setFormValues
+                "form_total_cost"
               );
             }}
           >
@@ -1411,9 +1432,7 @@ export default function CostEntryForm() {
                 onClick={() => {
                   calculateSum(
                     ["form_processing_cost", "form_outsourcing_cost"],
-                    "form_processing_and_outsourcing_total",
-                    formValues,
-                    setFormValues
+                    "form_processing_and_outsourcing_total"
                   );
                 }}
               >
@@ -1446,7 +1465,7 @@ export default function CostEntryForm() {
                 variant="contained"
                 sx={{ mt: 1.5, width: "100%" }}
                 onClick={() => {
-                  calculateFinalCost(formValues, setFormValues);
+                  calculateFinalCost();
                 }}
               >
                 執行總成本合計
