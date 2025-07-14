@@ -297,7 +297,9 @@ For detailed API documentation with request/response examples, see the backend s
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+© 2025 CARBON. All rights reserved.
+
+This software is proprietary and confidential. Unauthorized copying, distribution, or modification is strictly prohibited. Use is restricted to CARBON and its authorized personnel only.
 
 ---
 
